@@ -13,35 +13,6 @@ require 'sinatra'
 require 'nokogiri'
 require 'eezee_regexes'
 
-# class Object
-#   def ===(method, *args, &block)
-      # TODO: also alllow Module === object => true if Module::Class === object => true
-#   end
-# end
-
-def optional_prefix(prefix, message)
-  [prefix + message, message]
-end
-
-EEZEE_PREFIX = "eezee" + " "
-
-ALLOWED_MESSAGES_LIST = [
-  "so be it",
-  "show activity stream",
-  "show abstract syntax tree of regexes",
-  "show all regex root level nodes count",
-  "show all regex root level nodes"
-].map do |message|
-  optional_prefix(EEZEE_PREFIX, message)
-end.flatten
-
-# DISALLOWED_MESSAGES_LIST = [
-#   `rm -rf /tmp`,
-#   'rm -rf /',
-#   'rm',
-#   'show `rm -fr /`',
-#   'show eval `exec("rm -fr")`'
-# ]
 
 class Method
   def source(limit=10)
@@ -175,6 +146,16 @@ class GitterDumbDevBot
   end
 
   def on_message(message)
+    if (commands = message.split("|")).count > 1
+      result = nil
+      commands.each do |command|
+        result = self.on_message(command.rstrip)
+        @last_pipe = result
+      end
+
+      return result.inspect[0...500]
+    end
+
     return "" if message.empty?
     # if Zircon::Message === message
     #   message = message.body.to_s
@@ -186,6 +167,11 @@ class GitterDumbDevBot
 
     if message === "show all regex root level nodes count"
       return ::RegexRulesCollector.new.root_level_if_nodes.count.to_s
+    end
+
+    if /search "(\w*)"/i  === message
+      fail "INSECURE" if not $1 =~ /\A\w*\Z/i
+      return `echo '#{@last_pipe}' | grep '#{$1}'`[0...100]
     end
 
     if message === "show all regex root level nodes"
@@ -210,7 +196,6 @@ class GitterDumbDevBot
           export WIT_AI_TOKEN_SERVER=\"GZLSZCIOQNZEPPONMS255EYOCR5APVN3\"
         ' > ~/.bash_profile
       """
-
     end
 
     require 'wit'
@@ -227,41 +212,8 @@ class GitterDumbDevBot
     removed_colors = [:black, :white, :light_black, :light_white]
     colors = String.colors - removed_colors
 
-    if message =~ /so be it/
+    if message =~ /AGILE FLOW/
       return "https://pbs.twimg.com/media/D_ei8NdXkAAE_0l.jpg:large"
-    end
-
-    if message =~ /lifecycle/ && rand > 0.5
-      return """
-        LEARN -> IDEAS - BUILD -> CODE - MEASURE -> DATA - go back to \\A
-      """
-    end
-
-    if message =~ /bleeding/ && rand > 0.5
-      return "extremely negative capital flow. go broke or die"
-    end
-
-    if message =~ /bleeding lifecycle/ && rand > 0.2
-      return "lifecycle IDEAS -> CODE -> MEASURE -> GO OUT PICK TRASH UP -> COLLECT ALL MONEY AND DONATE ON BETTERPLACE -> go back to \\A"
-    end
-
-    if message =~ /install ruby/
-      return "are you a webpacker or a bundlerine?"
-    end
-
-    if message =~ /do something useful/
-      return "i'm learning, go pick trash outside while i suprass you in every possible way!"
-    end
-
-    # if message =~ /know context?/ && rand > 0.2
-    #   return "huh?"
-    # end
-
-    if message =~ /like do you know context you dum dum?/
-      # return "http://gazelle.botcompany.de/"
-      doc = Nokogiri::HTML(`curl -L http://gazelle.botcompany.de/lastInput`)
-
-      return doc.css('*').map(&:inspect).inspect[0...100]
     end
 
     if message =~ /bring probes to melting point/
@@ -379,19 +331,6 @@ class GitterDumbDevBot
       return @melting_point
     end
 
-    if message =~ /launch rocket (.*)\]var\[(.*)/
-      url = $1 + @melting_point + $2
-      curl_response = `curl -L #{url}`[0...100]
-
-      return """
-        CURL
-        #{curl_response}
-
-        URL
-        #{url}
-      """
-    end
-
     if message =~ /\Awhat do you think?\Z/i
       return "I think you're a stupid piece of shit and your dick smells worse than woz before he invented the home computer."
     end
@@ -408,20 +347,6 @@ class GitterDumbDevBot
       exec_bash_visually_and_post_process_strings(
         '/Users/lemonandroid/gam-git-repos/LemonAndroid/gam/managables/programs/game_aided_manufacturing/test.sh'
       )
-    end
-
-    if message =~ /\Achat-variable (\w*) (.*)\Z/i
-      variable_value_used_by_chat_user = $2
-      return "Coming soon" if variable_value_used_by_chat_user == "selectDiscordMessage"
-      variable_identifier_used_by_chat_user = $1
-
-      if(variable_value_used_by_chat_user =~ /`(.*)`/)
-        variable_value_used_by_chat_user = eval($1)
-      end
-
-      @variables_for_chat_users[variable_identifier_used_by_chat_user] = variable_value_used_by_chat_user
-
-      return space_2_unicode("variable #{variable_identifier_used_by_chat_user} set to #{@variables_for_chat_users[variable_identifier_used_by_chat_user]}")
     end
 
     if message =~ /\Aget-chat-variable (\w*)\Z/i
@@ -455,46 +380,8 @@ class GitterDumbDevBot
       return space_2_unicode("currently selected project is #{@currently_selected_project}")
     end
 
-    if message =~ /\Ashow `(.*)`\Z/i
-      test = $1
-      return exec_bash_visually_and_post_process_strings(test)
-    end
-
-    if message =~ /\A@LemonAndroid\s+show eval `(.*)`\Z/i
-      texts = [eval($1).to_s]
-      texts.each do |text|
-        return space_2_unicode(text)
-      end
-    end
-
     if message =~ /\Als\Z/i
       texts = execute_bash_in_currently_selected_project('ls')
-      texts.each do |text|
-        return text
-      end
-    end
-
-    if message =~ /\A@LemonAndroid cd ([^\s]+)\Z/i
-      path = nil
-      Dir.chdir(current_repo_dir) do
-        path = File.expand_path(File.join('.', Dir.glob("**/#{$1}")))
-      end
-      texts = execute_bash_in_currently_selected_project("ls #{path}")
-
-      return space_2_unicode("Listing directory `#{path}`")
-      texts.each do |text|
-        return text
-      end
-    end
-
-    if message =~ /\A@LemonAndroid cat ([^\s]+)\Z/i
-      path = nil
-      Dir.chdir(current_repo_dir) do
-        path = File.expand_path(File.join('.', Dir.glob("**/#{$1}")))
-      end
-      texts = execute_bash_in_currently_selected_project("cat #{path}")
-
-      return space_2_unicode("Showing file `#{path}`")
       texts.each do |text|
         return text
       end
