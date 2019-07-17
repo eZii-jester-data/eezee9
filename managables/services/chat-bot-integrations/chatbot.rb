@@ -184,8 +184,22 @@ class GitterDumbDevBot
   end
   
   def on_message(message)
-    require 'wit'
 
+    if message === "get wit.ai token"
+      return "client HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ" + " " + "server GZLSZCIOQNZEPPONMS255EYOCR5APVN3"
+    end
+
+    if message === "get wit.ai token comfortably"
+      return """
+        echo '
+          export WIT_AI_TOKEN=\"HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ\" 
+          export WIT_AI_TOKEN_SERVER=\"GZLSZCIOQNZEPPONMS255EYOCR5APVN3\"
+        ' > ~/.bash_profile
+      """
+
+    end
+
+    require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     client.message(message)
 
@@ -232,7 +246,6 @@ class GitterDumbDevBot
 
     if message =~ /like do you know context you dum dum?/
       # return "http://gazelle.botcompany.de/"
-      byebug
       doc = Nokogiri::HTML(`curl -L http://gazelle.botcompany.de/lastInput`)
 
       return doc.css('*').map(&:inspect).inspect[0...100]
@@ -326,7 +339,6 @@ class GitterDumbDevBot
       return @sent_messages[-1][1]
     end
 
-    byebug
     if message =~ /probe last message full version size/
       return @sent_messages[-1][0].bytesize.to_s + 'bytes'
     end
