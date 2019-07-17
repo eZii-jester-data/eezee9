@@ -89,7 +89,7 @@ class NeuralNetwork
       #{@brainz.instance_variables}
       ```
     HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD
-  
+
     if very_verbose
       var = <<~HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD
         ```
@@ -102,7 +102,7 @@ class NeuralNetwork
       HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD
     end
 
-    
+
     unless @brainz.network.nil?
       # var += <<~HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD
       #   ```
@@ -110,7 +110,7 @@ class NeuralNetwork
       #   #{@brainz.network.hidden.to_s}
       #   #{@brainz.network.output.to_s}
       #   ```
-      # HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD 
+      # HUMAN_SCRIPT_INTROSPECT_FOR_DISCORD
     end
 
     return var
@@ -130,7 +130,7 @@ class GitterDumbDevBot
   def initialize
     @currently_selected_project = "lemonandroid/gam"
     @variables_for_chat_users = Hash.new
-    @players = Hash.new do |dictionary, identifier| 
+    @players = Hash.new do |dictionary, identifier|
       dictionary[identifier] = Hash.new
     end
     @melting_point_receivables = ["puts 'hello word'"]
@@ -162,7 +162,7 @@ class GitterDumbDevBot
     -X POST 'https://api.twitch.tv/helix/clips?broadcaster_id=#{twitch_broadcaster_id}'`
 
     created_clip_json_response = JSON.parse(created_clip_json_response)
-    
+
     id = created_clip_json_response["data"][0]["id"]
     return "https://clips.twitch.tv/#{id}"
 
@@ -182,8 +182,12 @@ class GitterDumbDevBot
 
     "`#{sub_zero_string.unpack('c*')}`"
   end
-  
+
   def on_message(message)
+    return "" if message.empty?
+    # if Zircon::Message === message
+    #   message = message.body.to_s
+    # end
 
     if message === "get wit.ai token"
       return "client HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ" + " " + "server GZLSZCIOQNZEPPONMS255EYOCR5APVN3"
@@ -192,7 +196,7 @@ class GitterDumbDevBot
     if message === "get wit.ai token comfortably"
       return """
         echo '
-          export WIT_AI_TOKEN=\"HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ\" 
+          export WIT_AI_TOKEN=\"HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ\"
           export WIT_AI_TOKEN_SERVER=\"GZLSZCIOQNZEPPONMS255EYOCR5APVN3\"
         ' > ~/.bash_profile
       """
@@ -209,7 +213,6 @@ class GitterDumbDevBot
     return "" unless ALLOWED_MESSAGES_LIST.include?(message)
     warn "Message #{message} not included in ALLOWED_MESSAGES_LIST (which is my name for a whitelist)" unless ALLOWED_MESSAGES_LIST.include?(message)
 
-    return if Zircon::Message === message
 
     removed_colors = [:black, :white, :light_black, :light_white]
     colors = String.colors - removed_colors
@@ -239,7 +242,7 @@ class GitterDumbDevBot
     if message =~ /do something useful/
       return "i'm learning, go pick trash outside while i suprass you in every possible way!"
     end
-    
+
     # if message =~ /know context?/ && rand > 0.2
     #   return "huh?"
     # end
@@ -377,8 +380,8 @@ class GitterDumbDevBot
         URL
         #{url}
       """
-    end 
-    
+    end
+
     if message =~ /\Awhat do you think?\Z/i
       return "I think you're a stupid piece of shit and your dick smells worse than woz before he invented the home computer."
     end
@@ -403,7 +406,7 @@ class GitterDumbDevBot
       variable_identifier_used_by_chat_user = $1
 
       if(variable_value_used_by_chat_user =~ /`(.*)`/)
-        variable_value_used_by_chat_user = eval($1)          
+        variable_value_used_by_chat_user = eval($1)
       end
 
       @variables_for_chat_users[variable_identifier_used_by_chat_user] = variable_value_used_by_chat_user
@@ -513,17 +516,24 @@ class GitterDumbDevBot
       port: '6667',
       channel: 'qanda-api/Lobby',
       username: 'LemonAndroid',
-      password: ENV["GITTER_IRC_PASSWORD"],
+      password: '067d08cd7a80e2d15cb583a055ad6b5fe857b271',
       use_ssl: true
     )
 
     client.on_message do |message|
-      on_message(message)
+      response = on_message(message.body.to_s)
+
+      unless response.empty?
+        client.privmsg(
+          "qanda-api/Lobby",
+          space_2_unicode_array([response]).join('')
+        )
+      end
     end
 
     client.run!
   end
-  
+
   def all_unix_process_ids(unix_id)
     descendant_pids(unix_id) + [unix_id]
   end
@@ -543,7 +553,7 @@ class GitterDumbDevBot
       end tell
     OSA_SCRIPT
   end
-  
+
   def get_window_position_and_size(unix_pid)
     possibly_window_bounds = run_osa_script(apple_script_window_position_and_size(unix_pid))
 
@@ -567,7 +577,7 @@ class GitterDumbDevBot
           process = Open4.bg(hopefully_bash_command, 0 => '', 1 => stdout, 2 => stderr)
           sleep 0.5
 
-          
+
           texts_array = space_2_unicode_array(stdout.split("\n"))
           texts_array += space_2_unicode_array(stderr.split("\n"))
 
@@ -613,7 +623,7 @@ class GitterDumbDevBot
 
   def ten_most_pushed_to_github_repos
     output = `curl https://api.github.com/users/LemonAndroid/repos`
-    
+
     processed_output = JSON
     .parse(output)
     .sort_by do |project|
@@ -623,7 +633,7 @@ class GitterDumbDevBot
     .map do |project|
       project["full_name"]
     end
-    
+
     space_2_unicode_array(processed_output)
   end
 
@@ -641,13 +651,11 @@ begin
 
   bot.load()
 
-  # Thread.new do
-  #   bot.start()
-  # end
+  bot.start()
 
-  get '/' do
-    bot.on_message(params[:message])
-  end
+  # get '/' do
+  #   bot.on_message(params[:message])
+  # end
 ensure
   bot.dump()
 end
