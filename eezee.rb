@@ -148,9 +148,11 @@ class GitterDumbDevBot
 
   def on_message(message)
     if (commands = message.split("|")).count > 1
+
       result = nil
       commands.each do |command|
         result = self.on_message(command.rstrip)
+
         @last_pipe = result
       end
 
@@ -175,6 +177,10 @@ class GitterDumbDevBot
       return `echo '#{@last_pipe}' | grep '#{$1}'`[0...100]
     end
 
+    if /agi\.blue/ === message
+      return @last_raw_pipe.count
+    end
+
     if message === "show all regex root level nodes"
       def wrap(text)
         """
@@ -183,7 +189,14 @@ class GitterDumbDevBot
         ```
         """
       end
-      return wrap(RegexRulesCollector.new.flat_root_level_if_nodes)
+
+      def raw_pipe(result)
+        @last_raw_pipe = result
+      end
+
+      result = raw_pipe(RegexRulesCollector.new.flat_root_level_if_nodes)
+
+      return wrap(result)
     end
 
     if message === "get wit.ai token"
