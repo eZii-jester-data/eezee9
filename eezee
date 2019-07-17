@@ -13,6 +13,7 @@ require 'sinatra'
 require 'nokogiri'
 require 'eezee_regexes'
 
+EEZEE_PREFIX = "eezee "
 
 class Method
   def source(limit=10)
@@ -204,11 +205,6 @@ class GitterDumbDevBot
 
     message.gsub!(EEZEE_PREFIX, '')
 
-    # return "Message #{message} not included in ALLOWED_MESSAGES_LIST (which is my name for a whitelist)" unless ALLOWED_MESSAGES_LIST.include?(message)
-    return "" unless ALLOWED_MESSAGES_LIST.include?(message)
-    warn "Message #{message} not included in ALLOWED_MESSAGES_LIST (which is my name for a whitelist)" unless ALLOWED_MESSAGES_LIST.include?(message)
-
-
     removed_colors = [:black, :white, :light_black, :light_white]
     colors = String.colors - removed_colors
 
@@ -220,6 +216,52 @@ class GitterDumbDevBot
       @melting_point_receivables.push(@probes)
       @probes = []
       return "all of them? melt all the precious probes you idiot?"
+    end
+
+    if message =~ /philosophy/
+      return [
+        """
+        => first step in the correct direction
+: build on String#scan and include lines before and after
+: write a simple wrapper for String#scan and include first char before the match and last char after the match
+eezee: divide & conquer :white_check_mark:
+eezee: pls paste repl.it link
+https://repl.it/repls/SpiffyKookyConfigfiles
+repl.it
+SpiffyKookyConfigfiles
+Powerful and simple online compiler, IDE, interpreter, and REPL. Code, compile, and run code in 50+ programming languages: Clojure, Haskell, Kotlin (beta), QBasic, Forth, LOLCODE, BrainF, Emoticon, Bloop, Unlambda, JavaScript, CoffeeScript, Scheme, APL, Lua, Python 2.7, Ruby,...
+
+@eeZee engage test mode
+eezee: suggested input output pair search(\"test test test\", \"est\") => [\"test \"]
+@eeZee :white_check_mark:
+          """,
+
+          """
+            DEVELOP THIS BY USING ITSELF
+            WIELD THE TOOL TO DESIGN ITSELF
+          """,
+
+          """
+            LEAN
+
+            DATA
+
+
+            MEASURE
+
+            PROGRAM
+
+
+            BUILD
+
+            TEST
+
+            SHIP
+
+            GOTO: LEAN
+          """
+
+      ].sample
     end
 
     if message =~ /probe (.*) (.*)/
