@@ -178,7 +178,11 @@ class GitterDumbDevBot
     end
 
     if /agi\.blue/ === message
-      return @last_raw_pipe.count
+      @last_raw_pipe.each do |row|
+        `curl http://agi.blue/bot/post?q=#{CGI.escape(row)}&key=source&value=eezee`
+      end
+
+      return "#{@last_raw_pipe.count} entries created on https://agi.blue"
     end
 
     if message === "show all regex root level nodes"
