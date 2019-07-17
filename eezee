@@ -28,7 +28,9 @@ EEZEE_PREFIX = "eezee" + " "
 ALLOWED_MESSAGES_LIST = [
   "so be it",
   "show activity stream",
-  "show abstract syntax tree of regexes"
+  "show abstract syntax tree of regexes",
+  "show all regex root level nodes count",
+  "show all regex root level nodes"
 ].map do |message|
   optional_prefix(EEZEE_PREFIX, message)
 end.flatten
@@ -180,6 +182,21 @@ class GitterDumbDevBot
 
     if message === "show abstract syntax tree of regexes"
       return ::RegexRulesCollector.new.to_s
+    end
+
+    if message === "show all regex root level nodes count"
+      return ::RegexRulesCollector.new.root_level_if_nodes.count.to_s
+    end
+
+    if message === "show all regex root level nodes"
+      def wrap(text)
+        """
+        ```
+        #{text}
+        ```
+        """
+      end
+      return wrap(RegexRulesCollector.new.flat_root_level_if_nodes)
     end
 
     if message === "get wit.ai token"
