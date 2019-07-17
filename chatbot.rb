@@ -25,21 +25,8 @@ end
 EEZEE_PREFIX = "eezee" + " "
 
 ALLOWED_MESSAGES_LIST = [
-  "fuck it",
-  "install ruby",
-  "do something useful",
-  "know context?",
-  "like do you know context you dum dum?",
-  "show `man ruby`",
-  "show `man netstat`",
-  "show `man telnet`",
-  "show `man traceroute`",
-  "lifecycle",
-  "bleeding",
-  "bleeding lifecycle",
-  "melt",
-  "get-liquids-after-melting-point",
-  "probe last message full version size"
+  "so be it",
+  "show activity stream"
 ].map do |message|
   optional_prefix(EEZEE_PREFIX, message)
 end.flatten
@@ -217,7 +204,7 @@ class GitterDumbDevBot
     removed_colors = [:black, :white, :light_black, :light_white]
     colors = String.colors - removed_colors
 
-    if message =~ /fuck it/
+    if message =~ /so be it/
       return "https://pbs.twimg.com/media/D_ei8NdXkAAE_0l.jpg:large"
     end
 
@@ -651,11 +638,11 @@ begin
 
   bot.load()
 
-  bot.start()
+  # bot.start()
 
-  # get '/' do
-  #   bot.on_message(params[:message])
-  # end
+  get '/' do
+    bot.on_message(params[:message])
+  end
 ensure
   bot.dump()
 end
