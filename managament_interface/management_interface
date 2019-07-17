@@ -1,4 +1,0 @@
-bundle show ruby2d
-ruby -v
-pwd
-bundle exec ruby runnable.rb
