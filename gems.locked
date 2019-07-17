@@ -10,6 +10,7 @@ GEM
     brainz (0.2.0)
     byebug (11.0.1)
     colorize (0.8.1)
+    eezee_regexes (0.1.2)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     gyazo (3.0.1)
@@ -44,6 +45,7 @@ DEPENDENCIES
   bundler
   byebug
   colorize
+  eezee_regexes
   gyazo
   nokogiri
   open4

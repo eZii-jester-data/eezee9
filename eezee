@@ -11,6 +11,7 @@ require 'brainz'
 require 'bundler'
 require 'sinatra'
 require 'nokogiri'
+require 'eezee_regexes'
 
 # class Object
 #   def ===(method, *args, &block)
@@ -26,7 +27,8 @@ EEZEE_PREFIX = "eezee" + " "
 
 ALLOWED_MESSAGES_LIST = [
   "so be it",
-  "show activity stream"
+  "show activity stream",
+  "show abstract syntax tree of regexes"
 ].map do |message|
   optional_prefix(EEZEE_PREFIX, message)
 end.flatten
@@ -175,6 +177,10 @@ class GitterDumbDevBot
     # if Zircon::Message === message
     #   message = message.body.to_s
     # end
+
+    if message === "show abstract syntax tree of regexes"
+      return ::RegexRulesCollector.new.to_s
+    end
 
     if message === "get wit.ai token"
       return "client HGLIOLWCVEFT2ZIIBLO3KRCA2QYQPGPZ" + " " + "server GZLSZCIOQNZEPPONMS255EYOCR5APVN3"
@@ -642,6 +648,8 @@ begin
 
   get '/' do
     bot.on_message(params[:message])
+  rescue Exception => e
+    e.message
   end
 ensure
   bot.dump()
