@@ -21,7 +21,18 @@ class Function
   end
 
   def explain
-    "This command creates a new function f(x) = y"
+    """
+      This command creates a new function ƒ(x) = y
+
+      ƒ
+
+      Mac OS X: press option and f simultaniously
+      Windows:
+        On a computer running Microsoft Windows and using the Windows-1252 character encoding, the minuscule can be input using alt+159 or alt+0131.
+        Look up at wikipedia and search for ƒ
+      Linux:
+        Copy & Paste ƒ (maybe a clipboard manager?) ofc you rule the world
+    """
   end
 end
 
