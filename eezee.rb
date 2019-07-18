@@ -240,6 +240,11 @@ class GitterDumbDevBot
       return result[0...250]
     end
 
+    if /clone eezee 10 times/ === message
+      ``
+      return "climbing the sourcerer.io ruby leaderboard"
+    end
+
     if /show all regex root level nodes/ === message 
       def wrap(text)
         """
@@ -559,6 +564,10 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
       texts.each do |text|
         return text
       end
+    end
+
+    if message === "exit"
+      return "https://tenor.com/view/goal-flash-red-gif-12361214"
     end
   end
 
