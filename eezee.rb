@@ -16,6 +16,16 @@ require 'eezee_regexes'
 EEZEE_PREFIX = "eezee "
 
 class Function
+  attr_accessor :input_variables, :output_variables
+
+  def initialize
+    self.input_variables = []
+    self.output_variables = []
+  end
+
+  def compute
+  end
+
   def to_s
     "Function"
   end
@@ -253,7 +263,7 @@ class GitterDumbDevBot
         "2: 関数",
         "3: ƒ",
         "4: get wit.ai token comfortably",
-        "5: tbd",
+        "5: console 2 + 2",
         "6: tbd",
         "7: tbd",
         "8: tbd",
@@ -262,6 +272,15 @@ class GitterDumbDevBot
       ]
       
       return array[$1.to_i - 1]
+    end
+
+    if /console (.*)/ =~ message
+      return "Enjoy flight" if @took_off
+      return eval($1).to_s
+    end
+
+    if /take off/ =~ message
+      @took_off = true
     end
 
     if message === "0"
