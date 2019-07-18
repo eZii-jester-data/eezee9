@@ -131,17 +131,25 @@ class GitterDumbDevBot
     @probes = []
     @melted_liquids = []
     @sent_messages = []
+
+
+    # SEC-IMPORTANT
+
+    @took_off = true
   end
 
   def load()
-    fail [:info, :no_marshaled_data_found].join(' > ') unless File.exists?("/var/gam-discord-bot.ruby-marshal")
+    warn and return [:info, :no_marshaled_data_found].join(' > ') unless File.exists?("/var/gam-discord-bot.ruby-marshal")
     data = File.read("/var/gam-discord-bot.ruby-marshal")
-    @variables_for_chat_users = Marshal.load(data)
+    @melting_point_receivables = Marshal.load(data)
   end
 
+  require 'facets'
   def dump()
-    data = Marshal.dump(@variables_for_chat_users)
-    File.write("/var/gam-discord-bot.ruby-marshal", data)
+    data = Marshal.dump(@melting_point_receivables)
+    File.rewrite("/var/gam-discord-bot.ruby-marshal") do |_previous_file_content_string|
+      data
+    end
   end
 
   def twitch_username_from_url(url)
@@ -493,6 +501,10 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
       return @melting_point
     end
 
+    if message =~ /\Aget-melting-point-receivables\Z/
+      return @melting_point_receivables.inspect
+    end
+
     if message =~ /\Awhat do you think?\Z/i
       return "I think you're a stupid piece of shit and your dick smells worse than woz before he invented the home computer."
     end
@@ -713,10 +725,10 @@ begin
   # bot.start()
 
   get '/' do
-    bot.on_message(params[:message])
+    response_string = bot.on_message(params[:message])
+    bot.dump()
+    response_string
   rescue Exception => e
     e.message
   end
-ensure
-  bot.dump()
 end

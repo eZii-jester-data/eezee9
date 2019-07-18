@@ -12,3 +12,5 @@ gem 'nokogiri'
 
 gem 'wit'
 gem 'eezee_regexes'
+
+gem 'facets'

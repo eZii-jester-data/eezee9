@@ -11,6 +11,7 @@ GEM
     byebug (11.0.1)
     colorize (0.8.1)
     eezee_regexes (0.1.4)
+    facets (3.1.0)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     gyazo (3.0.1)
@@ -46,6 +47,7 @@ DEPENDENCIES
   byebug
   colorize
   eezee_regexes
+  facets
   gyazo
   nokogiri
   open4
