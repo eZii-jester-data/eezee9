@@ -15,6 +15,16 @@ require 'eezee_regexes'
 
 EEZEE_PREFIX = "eezee "
 
+class Function
+  def to_s
+    "Function"
+  end
+
+  def explain
+    "This command creates a new function f(x) = y"
+  end
+end
+
 class Method
   def source(limit=10)
     file, line = source_location
@@ -164,11 +174,11 @@ class GitterDumbDevBot
     #   message = message.body.to_s
     # end
 
-    if message === "show abstract syntax tree of regexes"
+    if /show abstract syntax tree of regexes/  === message
       return ::RegexRulesCollector.new.to_s
     end
 
-    if message === "show all regex root level nodes count"
+    if /show all regex root level nodes count/ === message
       return ::RegexRulesCollector.new.root_level_if_nodes.count.to_s
     end
 
@@ -185,7 +195,23 @@ class GitterDumbDevBot
       return "#{@last_raw_pipe.count} entries created on https://agi.blue"
     end
 
-    if message === "show all regex root level nodes"
+    def url_regex
+      /(.*)/
+    end
+    if /raw #{url_regex}/ === message
+      url = $1
+      case url
+      when /github.com/
+        url.gsub!(/github.com/, 'raw.githubusercontent.com')
+        url.gsub!(/blob\//, '')
+      end
+
+      result = `curl #{url}`
+      @last_raw_pipe = result
+      return result[0...250]
+    end
+
+    if /show all regex root level nodes/ === message 
       def wrap(text)
         """
         ```
@@ -198,9 +224,56 @@ class GitterDumbDevBot
         @last_raw_pipe = result
       end
 
-      result = raw_pipe(RegexRulesCollector.new.flat_root_level_if_nodes)
+      result1 = nil
+      if @last_raw_pipe
+        result1 = RegexRulesCollector.new(@last_raw_pipe).flat_root_level_if_nodes
+      else
+        result1 = RegexRulesCollector.new.flat_root_level_if_nodes
+      end
+
+      result2 = raw_pipe(result1)
 
       return wrap(result)
+    end
+
+    if /\A((?:10)|(?:[1-9]))\Z/ === message
+      array = [
+        "1: get random eezee bot with wit.ai integration",
+        "2: 関数",
+        "3: ƒ",
+        "4: get wit.ai token comfortably",
+        "5: tbd",
+        "6: tbd",
+        "7: tbd",
+        "8: tbd",
+        "9: tbd",
+        "10: tbd"
+      ]
+      
+      return array[$1.to_i - 1]
+    end
+
+    if message === "0"
+      @last_raw_pipe = 0
+
+      return "Number `0`"
+    end
+
+    if message === "get random eezee bot with wit.ai integration"
+      return "pls integrate a github gist listing github urls of eezees with working bot integration"
+    end
+
+    def new_function_command
+      @raw_last_pipe = Function.new
+      return @raw_last_pipe.explain
+    end
+
+    if message === "ƒ"
+      return new_function_command
+    end
+
+    if message === "関数"
+      return new_function_command
     end
 
     if message === "get wit.ai token"
