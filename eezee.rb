@@ -190,6 +190,14 @@ class GitterDumbDevBot
   end
 
   def on_message(message)
+    if /\Ais eeZee ejected\?\Z/ === message
+      if @ejected == true
+        return "Yes, @eeZee is ejected"
+      else
+        return "No, @eeZee should still respond"
+      end
+    end
+
     return "" if @ejected
 
     if (commands = message.split("|")).count > 1
@@ -209,7 +217,7 @@ class GitterDumbDevBot
     #   message = message.body.to_s
     # end
 
-    if /server byebug/
+    if /server byebug/ =~ message
       byebug
     end
 
@@ -580,7 +588,7 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
       return "https://agi.black"
     end
 
-    if message =~ /eject/
+    if message =~ /\Aeject\Z/
       @ejected = true
       return "@eeZee was ejected"
     end
