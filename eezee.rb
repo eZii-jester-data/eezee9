@@ -15,6 +15,31 @@ require 'eezee_regexes'
 
 EEZEE_PREFIX = "eezee "
 
+class Number
+  def initialize(string_representation_from_discord)
+    @string_representation_from_discord = string_representation_from_discord
+  end
+
+  def to_s
+    """
+      NUMBER
+      STRING REPRESENTATION FROM DISCORD
+      #{@string_representation_from_discord}
+
+      RUBY #{RUBY_ENGINE} #{RUBY_VERSION} FLOAT
+      #{@string_representation_from_discord.to_f}
+
+      RUBY #{RUBY_ENGINE} #{RUBY_VERSION} INTEGER
+      #{@string_representation_from_discord.to_i}
+
+      PYTHON #{"runtime X"} #{"version X"} INTEGER
+      tbi by @gurenm3
+      PYTHON #{"runtime X"} #{"version X"} FLOAT
+      tbi by @gurenm3
+    """
+  end
+end
+
 class Function
   attr_accessor :input_variables, :output_variables
 
@@ -316,9 +341,7 @@ class GitterDumbDevBot
     end
 
     if message === "0"
-      @last_raw_pipe = 0
-
-      return "Number `0`"
+      return Number.new(message).to_s
     end
 
     if message === "get random eezee bot with wit.ai integration"
