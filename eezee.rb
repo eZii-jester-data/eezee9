@@ -186,6 +186,8 @@ class GitterDumbDevBot
   end
 
   def on_message(message)
+    return "" if @ejected
+    
     if (commands = message.split("|")).count > 1
 
       result = nil
@@ -548,6 +550,30 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
       texts.each do |text|
         return text
       end
+    end
+
+    if message =~ /get-strategy-chooser-url/i
+      return "https://strategychooser.webflow.io/"
+    end
+
+    if message =~ /show qanda/
+      return "https://unique-swing.glitch.me"
+    end
+
+    if message =~ /show blue/
+      return "https://agi.blue"
+    end
+
+    if message =~ /show red/
+      return "https://agi.red"
+    end
+
+    if message =~ /show black/
+      return "https://agi.black"
+    end
+
+    if message =~ /eject/
+      @ejected = true
     end
 
     if message =~ /\A@LemonAndroid work on (\w+\/\w+)\Z/i
