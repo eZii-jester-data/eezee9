@@ -187,7 +187,7 @@ class GitterDumbDevBot
 
   def on_message(message)
     return "" if @ejected
-    
+
     if (commands = message.split("|")).count > 1
 
       result = nil
@@ -574,6 +574,7 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
 
     if message =~ /eject/
       @ejected = true
+      return "@eeZee was ejected"
     end
 
     if message =~ /\A@LemonAndroid work on (\w+\/\w+)\Z/i
