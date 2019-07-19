@@ -33,9 +33,9 @@ class Number
       #{@string_representation_from_discord.to_i}
 
       PYTHON #{"runtime X"} #{"version X"} INTEGER
-      tbi by @gurenm3
+      tbi by @gurrenm3 or @gurrenm4
       PYTHON #{"runtime X"} #{"version X"} FLOAT
-      tbi by @gurenm3
+      tbi by @gurrenm3 or @gurrenm4
     """
   end
 end
@@ -340,7 +340,7 @@ class GitterDumbDevBot
       @took_off = true
     end
 
-    if message === "0"
+    if /\A(\d+(?:\.\d+)?)\Z/ === message
       return Number.new(message).to_s
     end
 
