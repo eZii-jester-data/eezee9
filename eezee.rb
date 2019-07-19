@@ -49,7 +49,20 @@ class Function
   end
 
   def compute(*args)
+    if @compute_type
+      case @compute_type
+      when :convert_to_integer_then_sum
+        return args.map(&:to_i).reduce(:+)
+      when :sum
+        return args.public_send(@compute_type)
+      end 
+    end
+
     return args
+  end
+
+  def compute_is(compute_type)
+    @compute_type = compute_type
   end
 
   def to_s
@@ -360,14 +373,43 @@ class GitterDumbDevBot
     if /\Aƒ\(([^\)]*)\)\Z/ === message
       case @raw_last_pipe
       when Function
-        return @raw_last_pipe.compute($1)
+        return @raw_last_pipe.compute(*$1.split(',')).to_s
       end
     end
 
     if /\A関数\(([^\)]*)\)\Z/ === message
       case @raw_last_pipe
       when Function
-        return @raw_last_pipe.compute($1)
+        return @raw_last_pipe.compute(*$1.split(',')).to_s
+      end
+    end
+
+    if /\Aƒ compute is sumZ/ === message
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.compute_is(:sum)
+      end
+    end
+
+    if /\A関数 compute is sum\Z/ === message
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.compute_is(:sum)
+      end
+    end
+
+
+    if /\Aƒ compute is convert to integer and sum/ === message
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.compute_is(:convert_to_integer_then_sum)
+      end
+    end
+
+    if /\A関数 compute is convert to integer and sum\Z/ === message
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.compute_is(:convert_to_integer_then_sum)
       end
     end
 
