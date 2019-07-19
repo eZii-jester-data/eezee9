@@ -138,6 +138,10 @@ class GitterDumbDevBot
     @took_off = true
   end
 
+  def unsafe!
+    @took_off = false
+  end
+
   def load()
     warn and return [:info, :no_marshaled_data_found].join(' > ') unless File.exists?("/var/gam-discord-bot.ruby-marshal")
     data = File.read("/var/gam-discord-bot.ruby-marshal")
@@ -204,6 +208,10 @@ class GitterDumbDevBot
     # if Zircon::Message === message
     #   message = message.body.to_s
     # end
+
+    if /server byebug/
+      byebug
+    end
 
     if /show abstract syntax tree of regexes/  === message
       return ::RegexRulesCollector.new.to_s
@@ -755,6 +763,10 @@ end
 
 begin
   bot = GitterDumbDevBot.new
+
+  if ENV['UNSAFE_MODE'] === '1'
+    bot.unsafe!
+  end
 
   bot.load()
 
