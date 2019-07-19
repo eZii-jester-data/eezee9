@@ -23,7 +23,8 @@ class Function
     self.output_variables = []
   end
 
-  def compute
+  def compute(*args)
+    return args
   end
 
   def to_s
@@ -331,6 +332,20 @@ class GitterDumbDevBot
 
     if message === "ƒ"
       return new_function_command
+    end
+
+    if /\Aƒ\(([^\)]*)\)\Z/ === message
+      case @raw_last_pipe
+      when Function
+        return @raw_last_pipe.compute($1)
+      end
+    end
+
+    if /\A関数\(([^\)]*)\)\Z/ === message
+      case @raw_last_pipe
+      when Function
+        return @raw_last_pipe.compute($1)
+      end
     end
 
     if message === "関数"
