@@ -455,21 +455,21 @@ class GitterDumbDevBot
 
     if message =~ /philosophy/
       return [
-        """
-        => first step in the correct direction
-: build on String#scan and include lines before and after
-: write a simple wrapper for String#scan and include first char before the match and last char after the match
-eezee: divide & conquer :white_check_mark:
-eezee: pls paste repl.it link
-https://repl.it/repls/SpiffyKookyConfigfiles
-repl.it
-SpiffyKookyConfigfiles
-Powerful and simple online compiler, IDE, interpreter, and REPL. Code, compile, and run code in 50+ programming languages: Clojure, Haskell, Kotlin (beta), QBasic, Forth, LOLCODE, BrainF, Emoticon, Bloop, Unlambda, JavaScript, CoffeeScript, Scheme, APL, Lua, Python 2.7, Ruby,...
+#         """
+#         => first step in the correct direction
+# : build on String#scan and include lines before and after
+# : write a simple wrapper for String#scan and include first char before the match and last char after the match
+# eezee: divide & conquer :white_check_mark:
+# eezee: pls paste repl.it link
+# https://repl.it/repls/SpiffyKookyConfigfiles
+# repl.it
+# SpiffyKookyConfigfiles
+# Powerful and simple online compiler, IDE, interpreter, and REPL. Code, compile, and run code in 50+ programming languages: Clojure, Haskell, Kotlin (beta), QBasic, Forth, LOLCODE, BrainF, Emoticon, Bloop, Unlambda, JavaScript, CoffeeScript, Scheme, APL, Lua, Python 2.7, Ruby,...
 
-@eeZee engage test mode
-eezee: suggested input output pair search(\"test test test\", \"est\") => [\"test \"]
-@eeZee :white_check_mark:
-          """,
+# @eeZee engage test mode
+# eezee: suggested input output pair search(\"test test test\", \"est\") => [\"test \"]
+# @eeZee :white_check_mark:
+#           """,
 
           """
             DEVELOP THIS BY USING ITSELF
@@ -477,23 +477,23 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
           """,
 
           """
-            LEAN
+            DS-INSPIRED WORKFLOW EXPERIMENT
 
-            DATA
-
-
-            MEASURE
-
-            PROGRAM
+            1: DATA
 
 
-            BUILD
+            2: MEASURE
 
-            TEST
+            3: PROGRAM
 
-            SHIP
 
-            GOTO: LEAN
+            4: BUILD
+
+            5: TEST
+
+            6: SHIP
+
+            7: GOTO: 1
           """
 
       ].sample
@@ -532,6 +532,11 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
         @probes.push(probe)
         return probe
       end
+    end
+
+    regex = /∫(\d+),(\d+)\s*ƒ\(x\) = (\d+)x \+ (\d+)/
+    if message =~ regex
+      return ( ( ($3.to_i / 2) * ($2.to_i*$2.to_i) + $4.to_i * $2.to_i ) -  ( ($3.to_i / 2) * ($1.to_i*$1.to_i) + ($4.to_i * $1.to_i) ) ).to_s
     end
 
     if message =~ /show activity stream/
