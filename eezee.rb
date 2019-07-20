@@ -449,6 +449,10 @@ class GitterDumbDevBot
       return "all of them? melt all the precious probes you idiot?"
     end
 
+    if message =~ /show source/
+      return "https://github.com/LemonAndroid/eezee9"
+    end
+
     if message =~ /philosophy/
       return [
         """
@@ -692,7 +696,19 @@ eezee: suggested input output pair search(\"test test test\", \"est\") => [\"tes
     if message === "exit"
       return "https://tenor.com/view/goal-flash-red-gif-12361214"
     end
+
+
   end
+
+
+  # require 'nokogiri'
+  # require 'open-uri'
+  # def bounties
+  #     bounties_json = JSON.parse(`curl https://api.bountysource.com/search/bounty_search?callback=CORS&page=1&per_page=250`)
+  #     bounties_json['data']['issues'].map do |issue|
+  #       issue["title"]
+  #     end
+  # end
 
   def exec_bash_visually_and_post_process_strings(test)
     texts = execute_bash_in_currently_selected_project(test)
