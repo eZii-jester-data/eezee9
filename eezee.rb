@@ -539,6 +539,18 @@ class GitterDumbDevBot
       return ( ( ($3.to_i / 2) * ($2.to_i*$2.to_i) + $4.to_i * $2.to_i ) -  ( ($3.to_i / 2) * ($1.to_i*$1.to_i) + ($4.to_i * $1.to_i) ) ).to_s
     end
 
+    if /what is an integral?/ === message
+      return "what-is-an-integral.agi.blue"
+    end
+
+    if /how is an integral computed?/ === message
+      return "how-is-an-integral-computed.agi.blue"
+    end
+
+    if /what's the explanation for the computation of an integral?/ === message
+      return "whats-the-explanation-for-the-computation-of-an-integral.agi.blue"
+    end
+
     if message =~ /show activity stream/
       return "https://sideways-snowman.glitch.me/"
     end
