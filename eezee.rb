@@ -534,7 +534,7 @@ class GitterDumbDevBot
       end
     end
 
-    regex = /∫(\d+),(\d+)\s*ƒ\(x\) = (\d+)x \+ (\d+)/
+    regex = /∫(\d+),(\d+)\s*ƒ\(x\)\s*=\s*(\d+)x\s*\+\s*(\d+)/
     if message =~ regex
       return ( ( ($3.to_i / 2) * ($2.to_i*$2.to_i) + $4.to_i * $2.to_i ) -  ( ($3.to_i / 2) * ($1.to_i*$1.to_i) + ($4.to_i * $1.to_i) ) ).to_s
     end
