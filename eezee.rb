@@ -238,6 +238,11 @@ class GitterDumbDevBot
   end
 
   def on_message(message)
+    require 'wit'
+    client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
+    client.message(message)
+
+
     if /\Ais eeZee ejected\?\Z/ === message
       if @ejected == true
         return "Yes, @eeZee is ejected"
@@ -438,10 +443,6 @@ class GitterDumbDevBot
         ' > ~/.bash_profile
       """
     end
-
-    require 'wit'
-    client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-    client.message(message)
 
     message.gsub!(EEZEE_PREFIX, '')
 
