@@ -534,6 +534,15 @@ class GitterDumbDevBot
       end
     end
 
+
+    # Example ∫-30,-20ƒ(x) = -10x+ -10
+
+                              CO1   CO2
+
+
+                              Coefficients
+
+    # IMPORTANT IDEA: Show what variables correspond to in a visual example
     regex = /∫(\-?\d+),(\-?\d+)\s*[ƒf]\(x\)\s*=\s*(\-?\d+)x\s*\+\s*(\-?\d+)/ 
     require 'polynomials'
     if message =~ regex
