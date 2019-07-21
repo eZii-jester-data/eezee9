@@ -537,10 +537,10 @@ class GitterDumbDevBot
 
     # Example ∫-30,-20ƒ(x) = -10x+ -10
 
-                              CO1   CO2
+    #                          CO1   CO2
 
 
-                              Coefficients
+    #                          Coefficients
 
     # IMPORTANT IDEA: Show what variables correspond to in a visual example
     regex = /∫(\-?\d+),(\-?\d+)\s*[ƒf]\(x\)\s*=\s*(\-?\d+)x\s*\+\s*(\-?\d+)/ 
@@ -554,13 +554,13 @@ class GitterDumbDevBot
       coefficient_2 = polynomial.terms[0].coefficient
       return ( 
         ( 
-          (coefficient_1.to_i / 2) * ($2.to_i*$2.to_i) + coefficient_2.to_i * $2.to_i 
+          (coefficient_1.to_f / 2) * ($2.to_f*$2.to_f) + (coefficient_2.to_f * $2.to_f)
         ) 
         
         -
         
         ( 
-          (coefficient_1.to_i / 2) * ($1.to_i*$1.to_i) + (coefficient_2.to_i * $1.to_i) 
+          (coefficient_1.to_f / 2) * ($1.to_f*$1.to_f) + (coefficient_2.to_f * $1.to_f) 
         ) 
       ).to_s
     end
