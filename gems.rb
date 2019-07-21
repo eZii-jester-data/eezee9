@@ -14,3 +14,6 @@ gem 'wit'
 gem 'eezee_regexes'
 
 gem 'facets'
+
+gem 'polynomials'
+gem 'mathn'

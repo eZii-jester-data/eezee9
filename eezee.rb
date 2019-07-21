@@ -534,9 +534,26 @@ class GitterDumbDevBot
       end
     end
 
-    regex = /∫(\d+),(\d+)\s*[ƒf]\(x\)\s*=\s*(\d+)x\s*\+\s*(\d+)/
+    regex = /∫(\-?\d+),(\-?\d+)\s*[ƒf]\(x\)\s*=\s*(\-?\d+)x\s*\+\s*(\-?\d+)/ 
+    require 'polynomials'
     if message =~ regex
-      return ( ( ($3.to_i / 2) * ($2.to_i*$2.to_i) + $4.to_i * $2.to_i ) -  ( ($3.to_i / 2) * ($1.to_i*$1.to_i) + ($4.to_i * $1.to_i) ) ).to_s
+      polynomial = Polynomials::Polynomial.parse(message.split('=')[1])
+
+      # Terms is a Hash that has the exponents of the terms as keys
+      # https://github.com/LemonAndroid/polynomials/blob/newEra/lib/polynomials/polynomial.rb#L19
+      coefficient_1 = polynomial.terms[1].coefficient
+      coefficient_2 = polynomial.terms[0].coefficient
+      return ( 
+        ( 
+          (coefficient_1.to_i / 2) * ($2.to_i*$2.to_i) + coefficient_2.to_i * $2.to_i 
+        ) 
+        
+        -
+        
+        ( 
+          (coefficient_1.to_i / 2) * ($1.to_i*$1.to_i) + (coefficient_2.to_i * $1.to_i) 
+        ) 
+      ).to_s
     end
 
     if /what is an integral?/ === message
