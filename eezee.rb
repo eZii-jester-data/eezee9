@@ -24,14 +24,15 @@ end
 
 
 class Number
-  def initialize(string_representation_from_discord)
+  def initialize(string_representation_from_discord, source="discord")
+    @source = source
     @string_representation_from_discord = string_representation_from_discord
   end
 
   def to_s
     """
       NUMBER
-      STRING REPRESENTATION FROM DISCORD
+      STRING REPRESENTATION FROM #{@source.upcase}
       #{@string_representation_from_discord}
 
       RUBY #{RUBY_ENGINE} #{RUBY_VERSION} FLOAT
@@ -551,24 +552,32 @@ class GitterDumbDevBot
     #                          Coefficients
 
     # IMPORTANT IDEA: Show what variables correspond to in a visual example
-    regex = /∫(\-?\d+),(\-?\d+)\s*[ƒf]\(x\)\s*=\s*(\-?\d+)x\s*\+\s*(\-?\d+)/ 
+    regex = /∫\s*(\-?\d+)\s*,\s*(\-?\d+)\s*[ƒf]\(x\)\s*=(.*)/ 
     require 'polynomials'
+
     if message =~ regex
-      polynomial = Polynomials::Polynomial.parse(message.split('=')[1])
+      polynomial = Polynomials::Polynomial.parse($3)
 
       # Terms is a Hash that has the exponents of the terms as keys
       # https://github.com/LemonAndroid/polynomials/blob/newEra/lib/polynomials/polynomial.rb#L19
       coefficient_1 = polynomial.terms[1].coefficient
       coefficient_2 = polynomial.terms[0].coefficient
 
-      integral_F_end = ( 
-        (((coefficient_1 / 2.0) * (($2.to_f).abs**2))) + (coefficient_2.to_f * $2.to_f)
+      integral_F_end_value_2 = ( 
+        ((coefficient_1 / 2.0) * ($2.to_f**2)) + (coefficient_2.to_f * $2.to_f)
       )
-      integral_F_start = ( 
-        (((coefficient_1 / 2.0) * (($1.to_f).abs**2))) + (coefficient_2.to_f * $1.to_f) 
+      integral_F_start_value_1 = ( 
+        ((coefficient_1 / 2.0) * ($1.to_f**2)) + (coefficient_2.to_f * $1.to_f) 
       )
 
-      return (integral_F_end-integral_F_start).to_s
+      return <<~MATH_EXPLANATION_AND_RESULT
+      step 1: F(x) = (#{coefficient_1} / 2) * x^2 + (#{coefficient_2} * x)
+      step 2: F(#{$2}) - F(#{$1})
+      step 3: #{integral_F_end_value_2} - #{integral_F_start_value_1}
+
+      #{Number.new((integral_F_end_value_2-integral_F_start_value_1).to_s, "ruby").to_s}
+
+      MATH_EXPLANATION_AND_RESULT
     end
 
     if /what is an integral?/ === message
