@@ -15,6 +15,14 @@ require 'eezee_regexes'
 
 EEZEE_PREFIX = "eezee "
 
+
+class ::Integer
+  def direction
+    self/self.abs
+  end
+end
+
+
 class Number
   def initialize(string_representation_from_discord)
     @string_representation_from_discord = string_representation_from_discord
@@ -552,17 +560,15 @@ class GitterDumbDevBot
       # https://github.com/LemonAndroid/polynomials/blob/newEra/lib/polynomials/polynomial.rb#L19
       coefficient_1 = polynomial.terms[1].coefficient
       coefficient_2 = polynomial.terms[0].coefficient
-      return ( 
-        ( 
-          (coefficient_1.to_f / 2) * ($2.to_f*$2.to_f) + (coefficient_2.to_f * $2.to_f)
-        ) 
-        
-        -
-        
-        ( 
-          (coefficient_1.to_f / 2) * ($1.to_f*$1.to_f) + (coefficient_2.to_f * $1.to_f) 
-        ) 
-      ).to_s
+
+      integral_F_end = ( 
+        (((coefficient_1 / 2.0) * (($2.to_f).abs**2))) + (coefficient_2.to_f * $2.to_f)
+      )
+      integral_F_start = ( 
+        (((coefficient_1 / 2.0) * (($1.to_f).abs**2))) + (coefficient_2.to_f * $1.to_f) 
+      )
+
+      return (integral_F_end-integral_F_start).to_s
     end
 
     if /what is an integral?/ === message
