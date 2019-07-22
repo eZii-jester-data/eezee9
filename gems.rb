@@ -17,3 +17,5 @@ gem 'facets'
 
 gem 'polynomials'
 gem 'mathn'
+
+gem 'screencap', git: 'https://github.com/icetiger-tec/screencap.git'

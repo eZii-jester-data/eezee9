@@ -243,7 +243,7 @@ class GitterDumbDevBot
     response = client.message(message)
 
 
-    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=WolfRam&channel=#{602625635633856513}&post=#{CGI.escape(response.inspect)}"
+    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(response.inspect)}"
     `curl '#{url}'`
 
     if /\Ais eeZee ejected\?\Z/ === message
@@ -252,6 +252,14 @@ class GitterDumbDevBot
       else
         return "No, @eeZee should still respond"
       end
+    end
+
+    if /explain context/ === message
+      return """
+      it: the overall subject
+      this: the most nearest subject
+      that: the subject a bit farer then this (dimension for farer could be time, location, logic, etc)
+      """
     end
 
     return "" if @ejected
@@ -269,9 +277,30 @@ class GitterDumbDevBot
     end
 
     return "" if message.empty?
-    # if Zircon::Message === message
-    #   message = message.body.to_s
-    # end
+
+    def wrap_code_for_discord(string_of_code)
+      <<~DISCORD_MESSAGE
+        ```
+          #{string_of_code}
+        ```
+      DISCORD_MESSAGE
+    end
+    if /quick maths/ =~ message
+      require 'screencap'
+
+      f = Screencap::Fetcher.new("https://projecteuler.net/problem=#{(0...630).to_a.sample}")
+
+
+      # return wrap_code_for_discord(f.phantomjs_code[0..500])
+
+      screenshot = f.fetch(div: '.problem_content')
+
+      tempfile = Tempfile.new
+
+      `convert -flatten #{screenshot.path} #{tempfile.path}`
+
+      return upload_gyazo(tempfile.path)
+    end
 
     if /server byebug/ =~ message
       byebug
@@ -290,7 +319,7 @@ class GitterDumbDevBot
       return `echo '#{@last_pipe}' | grep '#{$1}'`[0...100]
     end
 
-    if /agi\.blue/ === message
+    if /agi\.blue/ === message && !@raw_last_pipe.nil?
       @last_raw_pipe.each do |row|
         `curl http://agi.blue/bot/post?q=#{CGI.escape(row)}&key=source&value=eezee`
       end
@@ -888,10 +917,14 @@ class GitterDumbDevBot
       t = Tempfile.new(['screencapture-pid-', root_unix_pid.to_s, '.png'])
       `screencapture -R #{position_and_size.join(',')} #{t.path}`
 
-      gyazo = Gyazo::Client.new access_token: 'b2893f18deff437b3abd45b6e4413e255fa563d8bd00d360429c37fe1aee560f'
-      res = gyazo.upload imagefile: t.path
-      res[:url]
+      upload_gyazo(t.path)
     end
+  end
+
+  def upload_gyazo(local_file_path)
+    gyazo = Gyazo::Client.new access_token: 'b2893f18deff437b3abd45b6e4413e255fa563d8bd00d360429c37fe1aee560f'
+    res = gyazo.upload imagefile: local_file_path
+    res[:url]
   end
 
   def current_repo_dir
