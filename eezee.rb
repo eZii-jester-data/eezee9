@@ -13,6 +13,9 @@ require 'sinatra'
 require 'nokogiri'
 require 'eezee_regexes'
 
+require 'bigdecimal'
+
+
 EEZEE_PREFIX = "eezee "
 
 
@@ -37,6 +40,9 @@ class Number
 
       RUBY #{RUBY_ENGINE} #{RUBY_VERSION} FLOAT
       #{@string_representation_from_discord.to_f}
+
+      RUBY #{RUBY_ENGINE} #{RUBY_VERSION} BIG DECIMAL
+      #{BigDecimal(@string_representation_from_discord)}
 
       RUBY #{RUBY_ENGINE} #{RUBY_VERSION} INTEGER
       #{@string_representation_from_discord.to_i}
@@ -242,8 +248,9 @@ class GitterDumbDevBot
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
 
+    message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
-    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(response.inspect)}"
+    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
     `curl '#{url}'`
 
     if /\Ais eeZee ejected\?\Z/ === message
