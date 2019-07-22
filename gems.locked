@@ -23,7 +23,7 @@ GEM
     byebug (11.0.1)
     colorize (0.8.1)
     concurrent-ruby (1.1.5)
-    eezee_regexes (0.1.4)
+    eezee_regexes (0.1.5)
     facets (3.1.0)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)

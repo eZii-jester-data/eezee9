@@ -9,11 +9,60 @@ require 'gyazo'
 require 'open4'
 require 'brainz'
 require 'bundler'
-require 'sinatra'
+require 'sinatra/base'
 require 'nokogiri'
 require 'eezee_regexes'
 
 require 'bigdecimal'
+
+
+
+
+require 'wit'
+require 'polynomials'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MESSAGES = []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 EEZEE_PREFIX = "eezee "
@@ -244,14 +293,15 @@ class GitterDumbDevBot
   end
 
   def on_message(message)
-    require 'wit'
-    client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-    response = client.message(message)
 
-    message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
+    # client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
+    # response = client.message(message)
 
-    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
-    `curl '#{url}'`
+    # message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
+
+    # url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
+    # `curl '#{url}'`
+
 
     if /\Ais eeZee ejected\?\Z/ === message
       if @ejected == true
@@ -292,6 +342,11 @@ class GitterDumbDevBot
         ```
       DISCORD_MESSAGE
     end
+
+    if /\Ashow twitch.tv messages\Z/ === message
+      return wrap_code_for_discord(MESSAGES.inspect[-500...-1])
+    end
+
     if /quick maths/ =~ message
       require 'screencap'
 
@@ -308,6 +363,8 @@ class GitterDumbDevBot
 
       return upload_gyazo(tempfile.path)
     end
+
+
 
     if /server byebug/ =~ message
       byebug
@@ -397,6 +454,7 @@ class GitterDumbDevBot
       return array[$1.to_i - 1]
     end
 
+
     if /console (.*)/ =~ message
       return "Enjoy flight" if @took_off
       return eval($1).to_s
@@ -485,8 +543,6 @@ class GitterDumbDevBot
 
     message.gsub!(EEZEE_PREFIX, '')
 
-    removed_colors = [:black, :white, :light_black, :light_white]
-    colors = String.colors - removed_colors
 
     if message =~ /AGILE FLOW/
       return "https://pbs.twimg.com/media/D_ei8NdXkAAE_0l.jpg:large"
@@ -593,7 +649,6 @@ class GitterDumbDevBot
 
     # IMPORTANT IDEA: Show what variables correspond to in a visual example
     regex = /∫\s*(\-?\d+)\s*,\s*(\-?\d+)\s*[ƒf]\(x\)\s*=(.*)/ 
-    require 'polynomials'
 
     if message =~ regex
       polynomial = Polynomials::Polynomial.parse($3)
@@ -637,7 +692,8 @@ class GitterDumbDevBot
     end
 
     if message =~ /hey\Z/i
-      return "hey"
+      # return "hey"
+      return MESSAGES[-20...-1].inspect[0...250]
     end
 
     if message =~ /\Athrow bomb\Z/i
@@ -967,7 +1023,51 @@ class GitterDumbDevBot
   end
 end
 
-begin
+
+OTHER_THREADS = []
+
+
+['jamiepinelive', 'simuleios', 'dowright', 'summit1g'].each do |channel_name|
+  OTHER_THREADS.push(Thread.new do
+    client = Zircon.new(
+      server: 'irc.twitch.tv',
+      port: '6667',
+      channel: '#' + channel_name,
+      username: 'lemonandroid',
+      password: ENV["EZE_TWITCH_TOKEN_CHAT"]
+    )
+  
+  
+    client.on_message do |message|
+      # puts "*** `on_message` responds with all received message ***"
+      # puts message.from
+      # puts message.to
+      # puts message.type
+      MESSAGES.push(message.body)
+    end
+
+    client.run!
+
+    # while true
+    #   MESSAGES.push(rand)
+    # end
+  end)
+end
+
+
+
+    
+
+
+
+SERVER_THREAD = Thread.new do
+  def on_message(message, bot)
+    response_string = bot.on_message(message)
+
+    bot.dump()
+    response_string
+  end
+
   bot = GitterDumbDevBot.new
 
   if ENV['UNSAFE_MODE'] === '1'
@@ -976,13 +1076,50 @@ begin
 
   bot.load()
 
-  # bot.start()
 
-  get '/' do
-    response_string = bot.on_message(params[:message])
-    bot.dump()
-    response_string
-  rescue Exception => e
-    e.message
+  server = TCPServer.new('localhost', 4567)
+
+  while(socket = server.accept)
+
+    request = socket.gets
+    method, path = request.split
+
+    match_data = path.match(/message=([^&]*)/)
+
+    next if match_data.nil?
+
+    raw_message = match_data[1]
+
+    message = CGI.unescape(raw_message)
+
+    response = on_message(message, bot)
+    next if response.nil?
+    socket.print "HTTP/1.1 200 OK\r\n" +
+    "Content-Type: text/plain\r\n" +
+    "Connection: close\r\n" +
+    "Content-Length: #{response.bytesize}\r\n"
+
+    socket.print "\r\n"
+    socket.print response
+
+    socket.close
   end
 end
+
+sleep 10
+
+
+puts MESSAGES.inspect
+
+
+THREADS = OTHER_THREADS + [SERVER_THREAD]
+THREADS.each { |thread| thread.join }
+
+puts "THREADS #{THREADS.inspect} joined"
+
+
+
+
+
+
+
