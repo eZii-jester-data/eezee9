@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem 'rack'
 gem 'zircon', github: 'icetiger-tec/zircon'
 gem 'colorize'
 gem 'byebug'

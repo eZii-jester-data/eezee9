@@ -79,6 +79,7 @@ DEPENDENCIES
   nokogiri
   open4
   polynomials
+  rack
   screencap!
   sinatra
   wit
