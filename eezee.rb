@@ -198,13 +198,17 @@ class GitterDumbDevBot
   end
 
   def load()
+    return if ENV["RACK_ENV"] == 'production'
+
     warn and return [:info, :no_marshaled_data_found].join(' > ') unless File.exists?("/var/gam-discord-bot.ruby-marshal")
     data = File.read("/var/gam-discord-bot.ruby-marshal")
     @melting_point_receivables = Marshal.load(data)
   end
 
-  require 'facets'
+  # require 'facets'
   def dump()
+    return if ENV["RACK_ENV"] == 'production'
+
     data = Marshal.dump(@melting_point_receivables)
     File.rewrite("/var/gam-discord-bot.ruby-marshal") do |_previous_file_content_string|
       data
