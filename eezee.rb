@@ -779,7 +779,8 @@ class GitterDumbDevBot
       return "https://tenor.com/view/goal-flash-red-gif-12361214"
     end 
 
-    return "Enjoy flight" if @took_off
+    return "Enjoy flight" if message =~ /console/ && @took_off
+    return "" if @took_off
 
     if /console (.*)/ =~ message
       return eval($1).to_s
