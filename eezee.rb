@@ -244,7 +244,8 @@ class GitterDumbDevBot
     "`#{sub_zero_string.unpack('c*')}`"
   end
 
-  def on_message(message)
+  require 'net/http'
+  def on_message(message, message_id)
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
@@ -252,7 +253,9 @@ class GitterDumbDevBot
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
     url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
-    `curl '#{url}'`
+   
+    uri = URI(url)
+    Net::HTTP.get(uri)
 
     if /\Ais eeZee ejected\?\Z/ === message
       if @ejected == true
@@ -271,6 +274,7 @@ class GitterDumbDevBot
     end
 
     return "" if @ejected
+
 
     if (commands = message.split("|")).count > 1
 
@@ -335,22 +339,6 @@ class GitterDumbDevBot
       return "#{@last_raw_pipe.count} entries created on https://agi.blue"
     end
 
-    def url_regex
-      /(.*)/
-    end
-    if /raw #{url_regex}/ === message
-      url = $1
-      case url
-      when /github.com/
-        url.gsub!(/github.com/, 'raw.githubusercontent.com')
-        url.gsub!(/blob\//, '')
-      end
-
-      result = `curl #{url}`
-      @last_raw_pipe = result
-      return result[0...250]
-    end
-
     if /clone eezee 10 times/ === message
       ``
       return "climbing the sourcerer.io ruby leaderboard"
@@ -396,32 +384,6 @@ class GitterDumbDevBot
       ]
       
       return array[$1.to_i - 1]
-    end
-
-    if /\Adocker ruby `(.*)`/ === message
-      return `docker run -ti --rm andrius/alpine-ruby ruby -e "#{$1}"`
-    end
-
-    if /\Adocker python `(.*)`/ === message
-      return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
-    end
-
-    if /\Adocker go `(.*)`/ === message
-      return "yet to be implemented"
-      # return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
-    end
-
-    if /\Adocker elixir `(.*)`/ === message
-      return `docker run --rm -it --user=root bitwalker/alpine-elixir elixir -e "#{$1}"`
-    end
-
-    if /\Adocker julia `(.*)`/ === message
-      return `docker run --rm -it -v $(pwd):/source cmplopes/alpine-julia julia -E "#{$1}"`
-    end
-
-    if /console (.*)/ =~ message
-      return "Enjoy flight" if @took_off
-      return eval($1).to_s
     end
 
     if /take off/ =~ message
@@ -816,6 +778,49 @@ class GitterDumbDevBot
     if message === "exit"
       return "https://tenor.com/view/goal-flash-red-gif-12361214"
     end 
+
+    return "Enjoy flight" if @took_off
+
+    if /console (.*)/ =~ message
+      return eval($1).to_s
+    end
+
+    if /\Adocker ruby `(.*)`/ === message
+      return `docker run -ti --rm andrius/alpine-ruby ruby -e "#{$1}"`
+    end
+
+    if /\Adocker python `(.*)`/ === message
+      return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
+    end
+
+    if /\Adocker go `(.*)`/ === message
+      return "yet to be implemented"
+      # return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
+    end
+
+    if /\Adocker elixir `(.*)`/ === message
+      return `docker run --rm -it --user=root bitwalker/alpine-elixir elixir -e "#{$1}"`
+    end
+
+    if /\Adocker julia `(.*)`/ === message
+      return `docker run --rm -it -v $(pwd):/source cmplopes/alpine-julia julia -E "#{$1}"`
+    end
+
+    def url_regex
+      /(.*)/
+    end
+    if /raw #{url_regex}/ === message
+      url = $1
+      case url
+      when /github.com/
+        url.gsub!(/github.com/, 'raw.githubusercontent.com')
+        url.gsub!(/blob\//, '')
+      end
+
+      result = `curl #{url}`
+      @last_raw_pipe = result
+      return result[0...250]
+    end
   end
 
 
@@ -1003,7 +1008,7 @@ begin
 
 
   get '/' do
-    response_string = bot.on_message(params[:message])
+    response_string = bot.on_message(params[:message], params[:msgID])
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
