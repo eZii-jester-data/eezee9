@@ -15,9 +15,10 @@ require 'eezee_regexes'
 
 require 'bigdecimal'
 
+require 'json2table'
 
 EEZEE_PREFIX = "eezee "
-
+ANSWERS = Hash.new { |hash, key| hash[key] = Hash.new }
 
 class ::Integer
   def direction
@@ -407,7 +408,7 @@ class GitterDumbDevBot
 
     if /\Adocker go `(.*)`/ === message
       return "yet to be implemented"
-      return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
+      # return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
     end
 
     if /\Adocker elixir `(.*)`/ === message
@@ -995,11 +996,16 @@ begin
 
   bot.load()
 
-  # bot.start()
+  get '/answer' do
+    hash = ANSWERS[params[:message_id]]
+    Json2table::get_html_table(hash.to_json)
+  end
+
 
   get '/' do
     response_string = bot.on_message(params[:message])
     bot.dump()
+    ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
   rescue Exception => e
     e.message
