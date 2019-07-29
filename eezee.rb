@@ -386,15 +386,36 @@ class GitterDumbDevBot
         "2: 関数",
         "3: ƒ",
         "4: get wit.ai token comfortably",
-        "5: console 2 + 2",
-        "6: tbd",
-        "7: tbd",
-        "8: tbd",
-        "9: tbd",
-        "10: tbd"
+        "5: console 2 + 2 (only works in insecure mode)",
+        "6: docker ruby `2 + 2`",
+        "7: docker python `2 + 2`",
+        "8: docker go `2 + 2` (dysfunctional)",
+        "9: docker elixir `IO.puts(2 + 2)`",
+        "10: docker julia `2 + 2`"
       ]
       
       return array[$1.to_i - 1]
+    end
+
+    if /\Adocker ruby `(.*)`/ === message
+      return `docker run -ti --rm andrius/alpine-ruby ruby -e "#{$1}"`
+    end
+
+    if /\Adocker python `(.*)`/ === message
+      return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
+    end
+
+    if /\Adocker go `(.*)`/ === message
+      return "yet to be implemented"
+      return `docker run --rm -ti jfloff/alpine-python python -c "#{$1}"`
+    end
+
+    if /\Adocker elixir `(.*)`/ === message
+      return `docker run --rm -it --user=root bitwalker/alpine-elixir elixir -e "#{$1}"`
+    end
+
+    if /\Adocker julia `(.*)`/ === message
+      return `docker run --rm -it -v $(pwd):/source cmplopes/alpine-julia julia -E "#{$1}"`
     end
 
     if /console (.*)/ =~ message
@@ -793,9 +814,7 @@ class GitterDumbDevBot
 
     if message === "exit"
       return "https://tenor.com/view/goal-flash-red-gif-12361214"
-    end
-
-
+    end 
   end
 
 
