@@ -205,9 +205,9 @@ class GitterDumbDevBot
     @melting_point_receivables = Marshal.load(data)
   end
 
-  # require 'facets'
   def dump()
     return if ENV["RACK_ENV"] == 'production'
+    require 'facets'
 
     data = Marshal.dump(@melting_point_receivables)
     File.rewrite("/var/gam-discord-bot.ruby-marshal") do |_previous_file_content_string|
@@ -1017,7 +1017,7 @@ begin
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
-  rescue Exception => e
-    e.message
+  # rescue Exception => e
+    # e.message
   end
 end
