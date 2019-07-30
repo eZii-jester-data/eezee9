@@ -17,6 +17,9 @@ require 'bigdecimal'
 
 require 'json2table'
 
+require 'rake'
+
+
 EEZEE_PREFIX = "eezee "
 ANSWERS = Hash.new { |hash, key| hash[key] = Hash.new }
 
@@ -260,6 +263,17 @@ class GitterDumbDevBot
    
     uri = URI(url)
     Net::HTTP.get(uri)
+
+    # if /run asm #{url_regex}/ === message
+    #   asm = `curl #{$1}`
+    #   t = Tempfile.new(['asm', '.asm'])
+    #   t.write(asm)
+
+    #   `nasm -f macho64 #{t.path}`
+    #   `ld -macosx_version_min 10.7.0 -lSystem -o hello #{t.path.ext('o')}`
+    #   byebug
+    #   return `./hello`
+    # end
 
     if /\Aget cpu instructions set\Z/ === message
       return `sysctl -a | grep cpu.feat`
@@ -815,9 +829,7 @@ class GitterDumbDevBot
       return `docker run --rm -it -v $(pwd):/source cmplopes/alpine-julia julia -E "#{$1}"`
     end
 
-    def url_regex
-      /(.*)/
-    end
+
     if /raw #{url_regex}/ === message
       url = $1
       case url
@@ -832,7 +844,9 @@ class GitterDumbDevBot
     end
   end
 
-
+  def url_regex
+    /(.*)/
+  end
   # require 'nokogiri'
   # require 'open-uri'
   # def bounties

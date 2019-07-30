@@ -22,3 +22,6 @@ gem 'mathn'
 gem 'screencap', git: 'https://github.com/icetiger-tec/screencap.git'
 
 gem 'json2table'
+
+
+gem 'rake'
