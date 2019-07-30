@@ -261,6 +261,10 @@ class GitterDumbDevBot
     uri = URI(url)
     Net::HTTP.get(uri)
 
+    if /\Aget cpu instructions set\Z/ === message
+      return `sysctl -a | grep cpu.feat`
+    end
+
     if /\Ais eeZee ejected\?\Z/ === message
       if @ejected == true
         return "Yes, @eeZee is ejected"
