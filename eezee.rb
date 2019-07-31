@@ -643,7 +643,7 @@ class GitterDumbDevBot
     end
 
     if message =~ /hey\Z/i
-      return "hey"
+      return "hey" if rand < 0.01
     end
 
     if message =~ /\Athrow bomb\Z/i
