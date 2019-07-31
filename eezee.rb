@@ -22,6 +22,7 @@ require 'rake'
 
 EEZEE_PREFIX = "eezee "
 ANSWERS = Hash.new { |hash, key| hash[key] = Hash.new }
+CURRENT_DISCORD_MESSAGE = Hash.new
 
 class ::Integer
   def direction
@@ -60,7 +61,7 @@ class Number
 end
 
 class Function
-  attr_accessor :input_variables, :output_variables
+  attr_accessor :input_variables, :output_variables, :string_from_discord
 
   def initialize
     self.input_variables = []
@@ -253,6 +254,12 @@ class GitterDumbDevBot
 
   require 'net/http'
   def on_message(message, message_id)
+    if message === "get last message id"
+      return CURRENT_DISCORD_MESSAGE[:mesage_id]
+    end
+    
+    CURRENT_DISCORD_MESSAGE[:mesage_id] = message_id
+
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
@@ -427,6 +434,18 @@ class GitterDumbDevBot
 
     if message === "ƒ"
       return new_function_command
+    end
+
+    if message =~ /ƒ\s*=\s*(.)/
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.string_from_discord = $1
+      end
+    end
+
+    if message === "visualize ƒ"
+      response = execute_bash_in_currently_selected_project("ruby /Users/lemonandroid/Documents/GitHub/polynomials/examples/plot_only_mutual_data.rb \"#{@raw_last_pipe.string_from_discord}\"")
+      return response
     end
 
     if /\Aƒ\(([^\)]*)\)\Z/ === message
@@ -644,6 +663,10 @@ class GitterDumbDevBot
 
     if message =~ /hey\Z/i
       return "hey" if rand < 0.01
+    end
+
+    if message =~ /\Avisualize ƒ\Z/i
+      `ruby examples/plot_only_mutual_data.rb "2x^2 + 2x + 2"`
     end
 
     if message =~ /\Athrow bomb\Z/i
@@ -933,21 +956,11 @@ class GitterDumbDevBot
     `osascript -e '#{script}'`
   end
 
-  def execute_bash_in_currently_selected_project(hopefully_bash_command)
+  def in_gam_dir
     if currently_selected_project_exists_locally?
       Dir.chdir(current_repo_dir) do
         Bundler.with_clean_env do
-          stdout = ''
-          stderr = ''
-          process = Open4.bg(hopefully_bash_command, 0 => '', 1 => stdout, 2 => stderr)
-          sleep 0.5
-
-
-          texts_array = space_2_unicode_array(stdout.split("\n"))
-          texts_array += space_2_unicode_array(stderr.split("\n"))
-
-          return [texts_array[1][0...120]]
-          # texts_array + screen_captures_of_visual_processes(process.pid)
+          yield
         end
       end
     else
@@ -958,6 +971,33 @@ class GitterDumbDevBot
         ]
       )
     end
+  end
+
+  def legacy_execute_bash_in_currently_selected_project(hopefully_bash_command)
+    in_gam_dir do
+      execute_bash_in_currently_selected_project(hopefully_bash_command)
+    end
+  end
+
+  def execute_bash_in_currently_selected_project(hopefully_bash_command)
+    byebug
+    ANSWERS[CURRENT_DISCORD_MESSAGE[:mesage_id]][:debug] = binding.inspect
+
+    stdout = ''
+    stderr = ''
+    process = Open4.bg(hopefully_bash_command, 0 => '', 1 => stdout, 2 => stderr)
+    sleep 0.5
+
+
+    ANSWERS[CURRENT_DISCORD_MESSAGE[:mesage_id]][:debug2] = binding.inspect
+
+    texts_array = space_2_unicode_array(stdout.split("\n"))
+    texts_array += space_2_unicode_array(stderr.split("\n"))
+
+    # return [texts_array[1][0...120]]
+    return (texts_array + screen_captures_of_visual_processes(process.pid)).join("\n")
+
+    # return screen_captures_of_visual_processes(process.pid)
   end
 
   def screen_captures_of_visual_processes(root_unix_pid)
@@ -1031,6 +1071,7 @@ begin
 
 
   get '/' do
+    ANSWERS[params[:msgID]][:message_from_discord] = params[:message]
     response_string = bot.on_message(params[:message], params[:msgID])
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
