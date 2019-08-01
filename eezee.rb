@@ -1071,7 +1071,7 @@ begin
 
 
   get '/' do
-    if /sinatra-console (.*)/ =~ message
+    if /sinatra-console (.*)/ =~ params[:message]
       return eval($1).to_s
     end
 
