@@ -402,7 +402,7 @@ class GitterDumbDevBot
       array = [
         "1: get random eezee bot with wit.ai integration",
         "2: 関数",
-        "3: ƒ",
+        "3: chat-variable bot0 `NeuralNetwork()`",
         "4: get wit.ai token comfortably",
         "5: console 2 + 2 (only works in insecure mode)",
         "6: docker ruby `2 + 2`",
