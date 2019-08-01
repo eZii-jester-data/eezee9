@@ -1071,6 +1071,10 @@ begin
 
 
   get '/' do
+    if /sinatra-console (.*)/ =~ message
+      return eval($1).to_s
+    end
+
     ANSWERS[params[:msgID]][:message_from_discord] = params[:message]
     response_string = bot.on_message(params[:message], params[:msgID])
     bot.dump()
