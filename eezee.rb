@@ -280,6 +280,15 @@ class GitterDumbDevBot
       end
     end
 
+    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "explain-eezee-probe"
+      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+      -H "Authorization: Bearer $WIT_AI_TOKEN"`
+
+      if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+        return JSON.parse(answer_api_response).sample["text"]
+      end
+    end
+
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
     url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
