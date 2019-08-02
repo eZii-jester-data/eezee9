@@ -68,6 +68,13 @@ class Function
     self.output_variables = []
   end
 
+  def evaluate
+    case string_from_discord
+    when "NeuralNetwork()"
+      return NeuralNetwork().verbose_introspect(very_verbose=true)
+    end
+  end
+
   def compute(*args)
     if @compute_type
       case @compute_type
@@ -433,7 +440,12 @@ class GitterDumbDevBot
     end
 
     if message === "ƒ"
-      return new_function_command
+      case @raw_last_pipe
+      when Function
+        return @raw_last_pipe.evaluate().to_s[0...500]
+      else
+        return new_function_command
+      end
     end
 
     if message =~ /ƒ\s*=\s*(.)/
@@ -450,7 +462,7 @@ class GitterDumbDevBot
 
     if /\Aƒ\(([^\)]*)\)\Z/ === message
       case @raw_last_pipe
-      when Function
+      when Functionƒ
         return @raw_last_pipe.compute(*$1.split(',')).to_s
       end
     end
