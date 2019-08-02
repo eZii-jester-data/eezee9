@@ -275,7 +275,9 @@ class GitterDumbDevBot
       answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
       -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
-      return JSON.parse(answer_api_response)[0]["text"]
+      if JSON.parse(answer_api_response).any?
+        return JSON.parse(answer_api_response)[0]["text"]
+      end
     end
 
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
