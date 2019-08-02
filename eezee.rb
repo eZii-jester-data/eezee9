@@ -448,7 +448,7 @@ class GitterDumbDevBot
       end
     end
 
-    if message =~ /ƒ\s*=\s*(.)/
+    if message =~ /ƒ\s*=\s*(.*)/i
       case @raw_last_pipe
       when Function
         @raw_last_pipe.string_from_discord = $1
