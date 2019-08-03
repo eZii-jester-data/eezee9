@@ -272,8 +272,8 @@ class GitterDumbDevBot
   p "fc barcelona"
   p "circle passing training game"
   p "forgot what it's called"
+  p "i you seek my help, i expect you to be using gyazo.com gifs to communicate bugs / non-functional stuff"
 
-  
 
   require 'net/http'
   def on_message(message, message_id)
