@@ -259,6 +259,22 @@ class GitterDumbDevBot
     "`#{sub_zero_string.unpack('c*')}`"
   end
 
+  puts "test"
+  puts "eezee"
+  puts "what?"
+  puts "132423"
+  puts "practice"
+  puts "crazy"
+  p "crazy practice"
+  p "brasil"
+  p "circle"
+  p "circle of humans"
+  p "fc barcelona"
+  p "circle passing training game"
+  p "forgot what it's called"
+
+  
+
   require 'net/http'
   def on_message(message, message_id)
     if message === "get last message id"
@@ -280,8 +296,8 @@ class GitterDumbDevBot
       end
     end
 
-    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "explain-eezee-probe"
-      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+    if !response.nil? && !response["entities"].count > 2 && response["entities"]["intent"][2]["value"] === "explain-eezee-probe"
+      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ ids=intent&entity_values=explain-eezee-probe&limit=10' \
       -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
       if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
