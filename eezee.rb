@@ -275,6 +275,14 @@ class GitterDumbDevBot
   p "i you seek my help, i expect you to be using gyazo.com gifs to communicate bugs / non-functional stuff"
 
 
+  p <<~TEST
+    any one here?
+
+    Send a message in Discord twitch_username
+
+    You can see the discord channel link at  B O T C O M P A N Y . D E
+  TEST
+
   require 'net/http'
   def on_message(message, message_id)
     if message === "get last message id"
