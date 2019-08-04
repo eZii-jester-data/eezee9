@@ -281,6 +281,8 @@ class GitterDumbDevBot
     Send a message in Discord twitch_username
 
     You can see the discord channel link at  B O T C O M P A N Y . D E
+
+    https://gyazo.com/c16ec1dd35409c7eac9642dc013da920
   TEST
 
   require 'net/http'
