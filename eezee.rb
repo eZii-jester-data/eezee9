@@ -354,7 +354,7 @@ class GitterDumbDevBot
     end
 
 
-    if /dev (.*)/
+    if /dev (.*)/ === message
       `git clone https://github.com/pickhardt/betty`
       `./betty/main.rb #{$1}`
     end
