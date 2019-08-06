@@ -311,7 +311,7 @@ class GitterDumbDevBot
     # end
 
     if response && response["entities"].any? && response["entities"]["intent"].map  { |intent| intent["value"] }.any?  {  |intent_value| intent_value === "explain-eezee-probe" }
-      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ ids=intent&entity_values=explain-eezee-probe&limit=10' \
+      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
       -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
       if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
