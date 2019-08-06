@@ -299,7 +299,7 @@ class GitterDumbDevBot
 
     if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
       search_query = response["entities"]["search_query"][0]["value"]
-      return search_query
+      return "https://github.com/search?q=#{CGI.escape(search_query)}"
     end
 
     if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
