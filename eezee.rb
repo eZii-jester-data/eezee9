@@ -356,7 +356,8 @@ class GitterDumbDevBot
 
     if /dev (.*)/ === message
       `git clone https://github.com/pickhardt/betty`
-      `./betty/main.rb #{$1}`
+    ensure
+      `ruby ./betty/main.rb #{$1}`
     end
 
     return "" if @ejected
