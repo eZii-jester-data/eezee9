@@ -296,6 +296,12 @@ class GitterDumbDevBot
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
+
+    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
+      search_query = response["entities"]["search_query"][0]["value"]
+      return search_query
+    end
+
     if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
       return """
         1: New regex command :)
