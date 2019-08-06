@@ -358,7 +358,7 @@ class GitterDumbDevBot
       begin
       `git clone https://github.com/pickhardt/betty`
     ensure
-      `ruby ./betty/main.rb #{$1}`
+      return `ruby ./betty/main.rb #{$1}`
     end
     end
 
