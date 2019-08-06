@@ -306,7 +306,7 @@ class GitterDumbDevBot
       end
     end
 
-    if !response && !response["entities"].count > 2 && response["entities"]["intent"][2]["value"] === "explain-eezee-probe"
+    if !response && !response["entities"].count > 2 && response["entities"]["intent"].sample["value"] === "explain-eezee-probe"
       answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ ids=intent&entity_values=explain-eezee-probe&limit=10' \
       -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
