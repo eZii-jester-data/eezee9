@@ -301,7 +301,9 @@ class GitterDumbDevBot
       search_query = response["entities"]["search_query"][0]["value"]
       # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
-      qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+      # qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+      qanda_iframe_url = "https://agi.blue/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+
       return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
     end
 
