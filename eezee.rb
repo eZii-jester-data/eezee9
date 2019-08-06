@@ -297,6 +297,8 @@ class GitterDumbDevBot
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
 
+    return response.inspect
+
     if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "question-about-eezee-probe"
       answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
       -H "Authorization: Bearer $WIT_AI_TOKEN"`
