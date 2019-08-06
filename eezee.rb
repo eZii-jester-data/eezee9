@@ -306,18 +306,18 @@ class GitterDumbDevBot
       end
     end
 
-    if !response
-      return response.inspect
-    end
-
-    # if !response && !response["entities"].count > 2 && response["entities"]["intent"].sample["value"] === "explain-eezee-probe"
-    #   answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ ids=intent&entity_values=explain-eezee-probe&limit=10' \
-    #   -H "Authorization: Bearer $WIT_AI_TOKEN"`
-
-    #   if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
-    #     return JSON.parse(answer_api_response).sample["text"]
-    #   end
+    # if !response
+    #   return response.inspect
     # end
+
+    if response && !response["entities"].count > 2 && response["entities"]["intent"].sample["value"] === "explain-eezee-probe"
+      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ ids=intent&entity_values=explain-eezee-probe&limit=10' \
+      -H "Authorization: Bearer $WIT_AI_TOKEN"`
+
+      if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+        return JSON.parse(answer_api_response).sample["text"]
+      end
+    end
 
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
