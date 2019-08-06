@@ -317,7 +317,7 @@ class GitterDumbDevBot
     #   if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
     #     return JSON.parse(answer_api_response).sample["text"]
     #   end
-    end
+    # end
 
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
