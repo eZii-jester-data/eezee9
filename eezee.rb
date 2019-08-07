@@ -20,8 +20,28 @@ require 'json2table'
 require 'rake'
 require 'active_support/all'
 
+class Bomb
+  def throw
+    return """
+      ```
+        Local variables (5 first)
+        #{local_variables.sample(5)}
 
+        Instance variables (5 first)
+        #{instance_variables.sample(5)}
 
+        Public methods (5 first)
+        #{public_methods.sample(5)}
+
+        ENV (120 first chars)
+        #{ENV.inspect[0...120]}
+
+        \`ifconfig\` (120 first chars)
+        #{`ifconfig`[0...120]}
+      ```
+    """
+  end
+end
 EEZEE_PREFIX = "eezee "
 ANSWERS = Hash.new { |hash, key| hash[key] = Hash.new }
 CURRENT_DISCORD_MESSAGE = Hash.new
@@ -297,8 +317,13 @@ class GitterDumbDevBot
 
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-    response = client.message(message, context: { message_id: message_id, channel_id: channel_id, user_id: user_id})
-   
+    response = client.message(
+      message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
+      msg_id: message_id, #cheat wichita haha
+      thread_id: channel_id, #cheat
+      context: { reference_time: user_id } #cheat
+    )
+    
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
         if rand() > 0.9
@@ -786,24 +811,7 @@ class GitterDumbDevBot
     end
 
     if message =~ /\Athrow bomb\Z/i
-      return """
-        ```
-          Local variables (5 first)
-          #{local_variables.sample(5)}
-
-          Instance variables (5 first)
-          #{instance_variables.sample(5)}
-
-          Public methods (5 first)
-          #{public_methods.sample(5)}
-
-          ENV (120 first chars)
-          #{ENV.inspect[0...120]}
-
-          \`ifconfig\` (120 first chars)
-          #{`ifconfig`[0...120]}
-        ```
-      """
+      return Bomb.new.throw
     end
 
     if message =~ /\Abring to melting point #{melting_point_receiavable_regex}\Z/i
