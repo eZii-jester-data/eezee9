@@ -305,11 +305,17 @@ class GitterDumbDevBot
           return response.inspect
         end
         return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
-        idea = response["entities"]["idea"][0]["value"]
         # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
         # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
-        qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+        
+        if rand() < 0.1
+          idea = response["entities"]["idea"][0]["value"]
+          qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+        elsif rand() < 0.5
+          idea = response["entities"]["search_query"][0]["value"]
+          qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+        end
 
         return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
       end
