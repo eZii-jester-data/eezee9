@@ -288,7 +288,7 @@ class GitterDumbDevBot
   TEST
 
   require 'net/http'
-  def on_message(message, message_id)
+  def on_message(message, message_id, channel_id, user_id)
     if message === "get last message id"
       return CURRENT_DISCORD_MESSAGE[:mesage_id]
     end
@@ -297,7 +297,7 @@ class GitterDumbDevBot
 
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-    response = client.message(message)
+    response = client.message(message, context: { message_id: message_id, channel_id: channel_id, user_id: user_id})
    
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
@@ -1192,7 +1192,7 @@ begin
     end
 
     ANSWERS[params[:msgID]][:message_from_discord] = params[:message]
-    response_string = bot.on_message(params[:message], params[:msgID])
+    response_string = bot.on_message(params[:message], params[:msgID, params[:channelID], params[:userID])
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
