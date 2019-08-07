@@ -20,6 +20,9 @@ require 'json2table'
 require 'rake'
 require 'active_support/all'
 
+DEBUG_CODE = ""
+BREAKPOINT = false
+
 class Bomb
   def throw
     return """
@@ -309,6 +312,9 @@ class GitterDumbDevBot
 
   require 'net/http'
   def on_message(message, message_id, channel_id, user_id)
+
+    eval DEBUG_CODE if BREAKPOINT
+
     if message === "get last message id"
       return CURRENT_DISCORD_MESSAGE[:mesage_id]
     end
