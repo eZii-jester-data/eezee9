@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/LemonAndroid/wit.git
-  revision: 103e345cad887032d579bc338138afb66170d8cc
+  revision: a0414a55a59d11cdbc29db0e62265387a7473c6a
   specs:
     wit (6.0.0)
 
