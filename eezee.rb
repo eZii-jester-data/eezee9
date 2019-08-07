@@ -1226,7 +1226,9 @@ begin
       if(PUBLIC_METHOD_FILTER)
         filter = eval(PUBLIC_METHOD_FILTER)
 
-        return discord_shorten([e.inspect, e.message, e.public_methods.select(&filter)].inspect)
+        # return discord_shorten([e.inspect, e.message, e.public_methods.select(&filter)].inspect)
+        return discord_shorten([e.inspect, e.message, e.public_methods.select(&filter)].inspect, e.send(ERROR_INSPECT))
+
       end
       return discord_shorten([e.inspect, e.message, e.public_methods.grep(PUBLIC_METHOD_GREP)].inspect)
 
