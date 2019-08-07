@@ -301,7 +301,7 @@ class GitterDumbDevBot
    
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
-        if rand() > 0.1
+        if rand() > 0.9
           return response.inspect
         end
         return "Maybe you lack ideas?" if response["entities"]["idea"].blank? or response["entities"]["search_query"].blank?
