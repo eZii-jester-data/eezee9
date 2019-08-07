@@ -1196,7 +1196,7 @@ begin
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
-  # rescue Exception => e
-    # e.message
+  rescue Exception => e
+    return [e.inspect, e.message].inspect
   end
 end
