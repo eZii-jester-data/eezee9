@@ -322,10 +322,7 @@ class GitterDumbDevBot
       require 'wit'
       client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
       response = client.message(
-        message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
-        msg_id: message_id, #cheat wichita haha
-        thread_id: channel_id, #cheat
-        context: { reference_time: user_id } #cheat
+        message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} "
       )
     
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
