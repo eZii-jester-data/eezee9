@@ -304,7 +304,7 @@ class GitterDumbDevBot
         if rand() > 0.1
           return response.inspect
         end
-        return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
+        return "Maybe you lack ideas?" if response["entities"]["idea"].blank? or response["entities"]["search_query"].blank?
         # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
         # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
