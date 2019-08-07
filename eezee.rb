@@ -39,8 +39,6 @@ class Bomb
         ENV (120 first chars)
         #{ENV.inspect[0...120]}
 
-        \`ifconfig\` (120 first chars)
-        #{`ifconfig`[0...120]}
       ```
     """
   end
