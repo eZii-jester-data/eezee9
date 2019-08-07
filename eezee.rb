@@ -315,9 +315,7 @@ class GitterDumbDevBot
 
       require 'wit'
       client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-      response = client.message(
-        message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} "
-      )
+      response = client.message(message)
     
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
