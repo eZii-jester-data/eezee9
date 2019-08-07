@@ -321,14 +321,14 @@ class GitterDumbDevBot
     
     CURRENT_DISCORD_MESSAGE[:mesage_id] = message_id
 
-    require 'wit'
-    client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-    response = client.message(
-      message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
-      msg_id: message_id, #cheat wichita haha
-      thread_id: channel_id, #cheat
-      context: { reference_time: user_id } #cheat
-    )
+      require 'wit'
+      client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
+      response = client.message(
+        message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
+        msg_id: message_id, #cheat wichita haha
+        thread_id: channel_id, #cheat
+        context: { reference_time: user_id } #cheat
+      )
     
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
@@ -1185,6 +1185,17 @@ class GitterDumbDevBot
   end
 end
 
+
+def discord_shorten(message)
+  discord_code_wrap(message.to_s[0...500])
+end
+def discord_code_wrap(message)
+  return  """
+    ```elixir
+    #{message}
+    ```
+  """
+end
 begin
   bot = GitterDumbDevBot.new
 
@@ -1211,6 +1222,12 @@ begin
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
   rescue Exception => e
+    if VERBOSE = true || rand > 0.5
+      return discord_shorten([e.inspect, e.message, e.public_methods].inspect)
+    end
     return [e.inspect, e.message].inspect
   end
+
 end
+
+HARDWARE =  "FREEZE"
