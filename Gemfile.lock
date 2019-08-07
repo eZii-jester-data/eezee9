@@ -1,4 +1,10 @@
 GIT
+  remote: https://github.com/LemonAndroid/wit.git
+  revision: 103e345cad887032d579bc338138afb66170d8cc
+  specs:
+    wit (6.0.0)
+
+GIT
   remote: https://github.com/icetiger-tec/screencap.git
   revision: 3997bc21f5180107dcfb65d482eb9f772a0fd51b
   specs:
@@ -63,7 +69,6 @@ GEM
     tilt (2.0.9)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    wit (6.0.0)
 
 PLATFORMS
   ruby
@@ -87,7 +92,7 @@ DEPENDENCIES
   rake
   screencap!
   sinatra
-  wit
+  wit!
   zircon!
 
 BUNDLED WITH
