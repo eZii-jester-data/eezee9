@@ -18,6 +18,8 @@ require 'bigdecimal'
 require 'json2table'
 
 require 'rake'
+require 'active_support/all'
+
 
 
 EEZEE_PREFIX = "eezee "
@@ -297,8 +299,6 @@ class GitterDumbDevBot
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
    
-    require 'active_support/all'
-
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
         return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
