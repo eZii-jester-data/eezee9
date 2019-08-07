@@ -296,9 +296,10 @@ class GitterDumbDevBot
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
-    
+   
+    require 'active_support/all'
+
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
-      require 'active_support/all'
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
         return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
         idea = response["entities"]["idea"][0]["value"]
