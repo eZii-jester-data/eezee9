@@ -1192,7 +1192,7 @@ begin
     end
 
     ANSWERS[params[:msgID]][:message_from_discord] = params[:message]
-    response_string = bot.on_message(params[:message], params[:msgID, params[:channelID], params[:userID])
+    response_string = bot.on_message(params[:message], params[:msgID], params[:channelID], params[:userID])
     bot.dump()
     ANSWERS[params[:msgID]][:answer_for_discord] = response_string
     response_string
