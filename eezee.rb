@@ -296,61 +296,63 @@ class GitterDumbDevBot
     require 'wit'
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
+    
+    if  !response.nil? && !response["entities"].empty? && response["entities"]["intent"].any?
+      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
+        idea = response["entities"]["idea"][0]["value"]
+        # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
-    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
-      idea = response["entities"]["idea"][0]["value"]
-      # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
+        # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+        qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
 
-      # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
-      qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+        return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+      end
 
-      return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
+        search_query = response["entities"]["search_query"][0]["value"]
+        # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
+
+        # qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+        qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(search_query)}"
+
+        return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+      end
+
+      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
+        return """
+          1: New regex command :)
+          2: New wit.ai entity :(
+          3: New functionality idea :'D
+          4: Free form search :diamond:
+
+          Please vote via emojis
+        """
+      end
+
+
+      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "question-about-eezee-probe"
+        answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+        -H "Authorization: Bearer $WIT_AI_TOKEN"`
+
+        if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+          return JSON.parse(answer_api_response).sample["text"]
+        end
+      end
+
+      # if !response
+      #   return response.inspect
+      # end
+
+      if response && response["entities"].any? && response["entities"]["intent"].map  { |intent| intent["value"] }.any?  {  |intent_value| intent_value === "explain-eezee-probe" }
+        answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+        -H "Authorization: Bearer $WIT_AI_TOKEN"`
+
+        if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+          return JSON.parse(answer_api_response).sample["text"]
+        end
+      end
     end
-
-    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
-      search_query = response["entities"]["search_query"][0]["value"]
-      # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
-
-      # qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
-      qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(search_query)}"
-
-      return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
-    end
-
-    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
-      return """
-        1: New regex command :)
-        2: New wit.ai entity :(
-        3: New functionality idea :'D
-        4: Free form search :diamond:
-
-        Please vote via emojis
-      """
-    end
-
     return response.inspect if rand() > 0.7
-
-    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "question-about-eezee-probe"
-      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
-      -H "Authorization: Bearer $WIT_AI_TOKEN"`
-
-      if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
-        return JSON.parse(answer_api_response).sample["text"]
-      end
-    end
-
-    # if !response
-    #   return response.inspect
-    # end
-
-    if response && response["entities"].any? && response["entities"]["intent"].map  { |intent| intent["value"] }.any?  {  |intent_value| intent_value === "explain-eezee-probe" }
-      answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
-      -H "Authorization: Bearer $WIT_AI_TOKEN"`
-
-      if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
-        return JSON.parse(answer_api_response).sample["text"]
-      end
-    end
 
     message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
