@@ -298,8 +298,9 @@ class GitterDumbDevBot
     response = client.message(message)
     
     if  !response.nil? && !response["entities"].empty? && response["entities"]["intent"].any?
+      require 'active_support'
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
-        return "Maybe you lack ideas?" if response["entities"]["idea"].none?
+        return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
         idea = response["entities"]["idea"][0]["value"]
         # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
