@@ -1223,6 +1223,13 @@ begin
     response_string
   rescue Exception => e
     if VERBOSE = true || rand > 0.5
+      if(PUBLIC_METHOD_FILTER)
+        filter = eval(PUBLIC_METHOD_FILTER)
+
+        return discord_shorten([e.inspect, e.message, e.public_methods.select(PUBLIC_METHOD_FILTER)].inspect)
+      end
+      return discord_shorten([e.inspect, e.message, e.public_methods.grep(PUBLIC_METHOD_GREP)].inspect)
+
       return discord_shorten([e.inspect, e.message, e.public_methods.grep(PUBLIC_METHOD_GREP)].inspect)
     end
     return [e.inspect, e.message].inspect
