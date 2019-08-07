@@ -297,6 +297,16 @@ class GitterDumbDevBot
     client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
     response = client.message(message)
 
+    if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
+      idea = response["entities"]["idea"][0]["value"]
+      # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
+
+      # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+      qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+
+      return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+    end
+
     if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
       search_query = response["entities"]["search_query"][0]["value"]
       # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
