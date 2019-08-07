@@ -301,6 +301,9 @@ class GitterDumbDevBot
    
     if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
+        if rand() > 0.1
+          return response.inspect
+        end
         return "Maybe you lack ideas?" if response["entities"]["idea"].blank?
         idea = response["entities"]["idea"][0]["value"]
         # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
