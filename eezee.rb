@@ -319,88 +319,88 @@ class GitterDumbDevBot
     
     CURRENT_DISCORD_MESSAGE[:mesage_id] = message_id
 
-      require 'wit'
-      client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
-      response = client.message(
-        message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
-        msg_id: message_id, #cheat wichita haha
-        thread_id: channel_id, #cheat
-        context: { reference_time: user_id } #cheat
-      )
+    #   require 'wit'
+    #   client = Wit.new(access_token: ENV["WIT_AI_TOKEN"])
+    #   response = client.message(
+    #     message + " BOMB: #{Bomb.new.throw} " + "  DISCORD_CONTEX: #{message_id}, #{channel_id}, #{user_id} ",
+    #     msg_id: message_id, #cheat wichita haha
+    #     thread_id: channel_id, #cheat
+    #     context: { reference_time: user_id } #cheat
+    #   )
     
-    if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
-      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
-        if rand() > 0.9
-          return response.inspect
-        end
-        return "Maybe you lack ideas?" if response["entities"]["idea"].blank? or response["entities"]["search_query"].blank?
-        # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
+    # if  !response.nil? && !response["entities"].empty? && !response["entities"]["intent"].blank?
+    #   if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_template_idea"
+    #     if rand() > 0.9
+    #       return response.inspect
+    #     end
+    #     return "Maybe you lack ideas?" if response["entities"]["idea"].blank? or response["entities"]["search_query"].blank?
+    #     # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
-        # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+    #     # iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
         
-        if rand() < 0.1
-          idea = response["entities"]["idea"][0]["value"]
-          qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
-        elsif rand() < 0.5
-          idea = response["entities"]["search_query"][0]["value"]
-          qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
-        end
+    #     if rand() < 0.1
+    #       idea = response["entities"]["idea"][0]["value"]
+    #       qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+    #     elsif rand() < 0.5
+    #       idea = response["entities"]["search_query"][0]["value"]
+    #       qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(idea)}"
+    #     end
 
-        return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
-      end
+    #     return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+    #   end
 
-      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
-        search_query = response["entities"]["search_query"][0]["value"]
-        # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
+    #   if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "new_functionalities_free_form_search"
+    #     search_query = response["entities"]["search_query"][0]["value"]
+    #     # qanda_iframe_url = "https://github.com/search?q=#{CGI.escape(search_query)}"
 
-        # qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
-        qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(search_query)}"
+    #     # qanda_iframe_url = "https://gitlab.com/search?utf8=%E2%9C%93&search=#{CGI.escape(search_query)}&group_id=&project_id=&repository_ref=&nav_source=navbar"
+    #     qanda_iframe_url = "https://agi.blue/?q=#{CGI.escape(search_query)}"
 
-        return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
-      end
+    #     return "https://unique-swing.glitch.me/?myParam=#{CGI.escape(qanda_iframe_url)}"
+    #   end
 
-      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
-        return """
-          1: New regex command :)
-          2: New wit.ai entity :(
-          3: New functionality idea :'D
-          4: Free form search :diamond:
+    #   if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
+    #     return """
+    #       1: New regex command :)
+    #       2: New wit.ai entity :(
+    #       3: New functionality idea :'D
+    #       4: Free form search :diamond:
 
-          Please vote via emojis
-        """
-      end
+    #       Please vote via emojis
+    #     """
+    #   end
 
 
-      if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "question-about-eezee-probe"
-        answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
-        -H "Authorization: Bearer $WIT_AI_TOKEN"`
+    #   if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "question-about-eezee-probe"
+    #     answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+    #     -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
-        if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
-          return JSON.parse(answer_api_response).sample["text"]
-        end
-      end
+    #     if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+    #       return JSON.parse(answer_api_response).sample["text"]
+    #     end
+    #   end
 
-      # if !response
-      #   return response.inspect
-      # end
+    #   # if !response
+    #   #   return response.inspect
+    #   # end
 
-      if response && response["entities"].any? && response["entities"]["intent"].map  { |intent| intent["value"] }.any?  {  |intent_value| intent_value === "explain-eezee-probe" }
-        answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
-        -H "Authorization: Bearer $WIT_AI_TOKEN"`
+    #   if response && response["entities"].any? && response["entities"]["intent"].map  { |intent| intent["value"] }.any?  {  |intent_value| intent_value === "explain-eezee-probe" }
+    #     answer_api_response = `curl -XGET 'https://api.wit.ai/samples?entity_ids=intent&entity_values=explain-eezee-probe&limit=10' \
+    #     -H "Authorization: Bearer $WIT_AI_TOKEN"`
 
-        if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
-          return JSON.parse(answer_api_response).sample["text"]
-        end
-      end
-    end
-    return response.inspect if rand() > 0.7
+    #     if !answer_api_response.nil? && JSON.parse(answer_api_response).any?
+    #       return JSON.parse(answer_api_response).sample["text"]
+    #     end
+    #   end
+    # end
+    # return response.inspect if rand() > 0.7
 
-    message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
+    # message_for_discord = response.inspect.gsub(/<@(\d+)>/, '<@ \1>')
 
-    url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
+    # url = "https://botcompany.de/1024081/raw?_pass=#{ENV['BOTCOMPANY']}&server=next-gen+bots&channel=#{602625635633856513}&post=#{CGI.escape(message_for_discord)}"
    
-    uri = URI(url)
-    Net::HTTP.get(uri)
+    # uri = URI(url)
+    # Net::HTTP.get(uri)
 
     # if /run asm #{url_regex}/ === message
     #   asm = `curl #{$1}`
