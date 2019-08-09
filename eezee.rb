@@ -350,6 +350,7 @@ class GitterDumbDevBot
 
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
         return """
+          ⌘C⌘V (might be copied and pasted by a human, so do consider human intelligence)
           1: New regex command :)
           2: New wit.ai entity :(
           3: New functionality idea :sweat_smile:
