@@ -352,8 +352,8 @@ class GitterDumbDevBot
         return """
           1: New regex command :)
           2: New wit.ai entity :(
-          3: New functionality idea :'D
-          4: Free form search :diamond:
+          3: New functionality idea :sweat_smile:
+          4: Free form search :diamonds:
 
           Please vote via emojis
         """
