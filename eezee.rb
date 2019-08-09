@@ -354,6 +354,7 @@ class GitterDumbDevBot
           2: New wit.ai entity :(
           3: New functionality idea :sweat_smile:
           4: Free form search :diamonds:
+          5: Feed new github source link Kappa
 
           Please vote via emojis
         """
