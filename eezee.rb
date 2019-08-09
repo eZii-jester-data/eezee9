@@ -355,6 +355,7 @@ class GitterDumbDevBot
           3: New functionality idea :'D
           4: Free form search :diamond:
           5: Consume new github source link Kappa
+
           Please vote via emojis
         """
       end
