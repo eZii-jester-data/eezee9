@@ -307,6 +307,12 @@ class GitterDumbDevBot
 
   require 'net/http'
   def on_message(message, message_id, channel_id, user_id)
+    allowed_channels = ENV['ALLOWED_CHANNELS'] || [602625635633856513, 609100317899882527]
+    
+    unless allowed_channels.include?(channel_id.to_i)
+      return ""
+    end
+    
     if message === "get last message id"
       return CURRENT_DISCORD_MESSAGE[:mesage_id]
     end
