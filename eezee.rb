@@ -1211,6 +1211,8 @@ begin
     response_string
   rescue Exception => e
     if VERBOSE = true || rand > 0.5
+      PUBLIC_METHOD_FILTER = ENV['PUBLIC_METHOD_FILTER']
+      ERROR_INSPECT = ENV['ERROR_INSPECT']
       if(PUBLIC_METHOD_FILTER)
         filter = eval(PUBLIC_METHOD_FILTER)
 
