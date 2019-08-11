@@ -307,9 +307,13 @@ class GitterDumbDevBot
 
   require 'net/http'
   def on_message(message, message_id, channel_id, user_id)
-    allowed_channels = ENV['ALLOWED_CHANNELS'] || [602625635633856513, 609100317899882527]
+    if ENV['HEROKU_DISCORD_CONFIGURABLE'] == 'true'
+        allowed_channels = ENV['ALLOWED_CHANNELS'] || [602625635633856513, 609100317899882527]
+    else
+        allowed_channels = [602625635633856513, 609100317899882527]
+    end
     
-    unless allowed_channels.include?(channel_id.to_i)
+    if channel_id.present? && !allowed_channels.include?(channel_id.to_i)
       return ""
     end
     
