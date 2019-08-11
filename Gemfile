@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem 'rack'
-gem 'zircon', github: 'icetiger-tec/zircon'
+gem 'zircon'
 gem 'colorize'
 gem 'byebug'
 gem 'gyazo'
@@ -15,7 +15,7 @@ gem 'eezee_regexes'
 gem 'facets'
 gem 'polynomials'
 gem 'mathn'
-gem 'screencap', git: 'https://github.com/icetiger-tec/screencap.git'
+gem 'screencap'
 gem 'json2table'
 gem 'rake'
 gem 'gnuplot'
