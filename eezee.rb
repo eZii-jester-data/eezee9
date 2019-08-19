@@ -322,6 +322,28 @@ class GitterDumbDevBot
       return CURRENT_DISCORD_MESSAGE[:mesage_id]
     end
     
+    
+    def new_function_command
+      @raw_last_pipe = Function.new
+      return @raw_last_pipe.explain
+    end
+
+    if message === "ƒ"
+      case @raw_last_pipe
+      when Function
+        return @raw_last_pipe.evaluate().to_s[0...500]
+      else
+        return new_function_command
+      end
+    end
+
+    if message =~ /ƒ\s*=\s*(.*)/i
+      case @raw_last_pipe
+      when Function
+        @raw_last_pipe.string_from_discord = $1
+      end
+    end
+    
     CURRENT_DISCORD_MESSAGE[:mesage_id] = message_id
 
       require 'wit'
@@ -568,27 +590,6 @@ class GitterDumbDevBot
       return "pls integrate a github gist listing github urls of eezees with working bot integration"
     end
 
-    def new_function_command
-      @raw_last_pipe = Function.new
-      return @raw_last_pipe.explain
-    end
-
-    if message === "ƒ"
-      case @raw_last_pipe
-      when Function
-        return @raw_last_pipe.evaluate().to_s[0...500]
-      else
-        return new_function_command
-      end
-    end
-
-    if message =~ /ƒ\s*=\s*(.*)/i
-      case @raw_last_pipe
-      when Function
-        @raw_last_pipe.string_from_discord = $1
-      end
-    end
-
     if message === "visualize ƒ"
       response = execute_bash_in_currently_selected_project("ruby /Users/lemonandroid/Documents/GitHub/polynomials/examples/plot_only_mutual_data.rb \"#{@raw_last_pipe.string_from_discord}\"")
       return response
@@ -596,7 +597,7 @@ class GitterDumbDevBot
 
     if /\Aƒ\(([^\)]*)\)\Z/ === message
       case @raw_last_pipe
-      when Functionƒ
+      when Function
         return @raw_last_pipe.compute(*$1.split(',')).to_s
       end
     end
