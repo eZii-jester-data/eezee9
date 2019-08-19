@@ -360,7 +360,7 @@ class GitterDumbDevBot
       end
 
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
-        return """
+        return <<~EOS
           1: New regex command :)
           2: New wit.ai entity :D
           3: New functionality idea :sweat_smile:
@@ -368,7 +368,7 @@ class GitterDumbDevBot
           5: Consume new github source link Kappa
 
           Please vote via emojis
-        """
+        EOS
       end
 
 
