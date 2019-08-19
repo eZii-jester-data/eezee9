@@ -362,9 +362,9 @@ class GitterDumbDevBot
       if !response.nil? && !response["entities"].empty? && response["entities"]["intent"][0]["value"] === "offer_cool_new_functionalities"
         return """
           1: New regex command :)
-          2: New wit.ai entity :(
-          3: New functionality idea :'D
-          4: Free form search :diamond:
+          2: New wit.ai entity :D
+          3: New functionality idea :sweat_smile:
+          4: Free form search :diamonds:
           5: Consume new github source link Kappa
 
           Please vote via emojis
