@@ -1,4 +1,4 @@
-
+PUBLIC_METHOD_GREP = '*'
 require 'zircon'
 require 'colorize'
 require 'byebug'
